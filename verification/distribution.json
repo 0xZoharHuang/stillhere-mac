@@ -1,0 +1,21 @@
+{
+  "version": "0.1.0",
+  "zipFullBundleReadbackMatches": true,
+  "dmgFullBundleReadbackMatches": true,
+  "mountedReadOnly": true,
+  "dmgDetachedAfterCheck": true,
+  "applicationsShortcutVerified": true,
+  "codesignDeepStrictVerified": true,
+  "artifacts": [
+    {
+      "file": "StillHere-0.1.0-mac.zip",
+      "bytes": 3322221,
+      "sha256": "70103f31e68a80cecfd9d055b7eb8e5d1d0713fa8026edbbd0d2787de37efb24"
+    },
+    {
+      "file": "StillHere-0.1.0-mac.dmg",
+      "bytes": 3610240,
+      "sha256": "cf3afa518e1c4ea0449fb36bbb9d9cd196aac9adb380fbe44f432f0fd59d59e2"
+    }
+  ]
+}

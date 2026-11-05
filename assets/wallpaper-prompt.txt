@@ -1,0 +1,8 @@
+Use case: illustration-story.
+Asset type: an original humorous Mac desktop privacy wallpaper, landscape 16:10, high resolution, flat full-bleed bitmap.
+Primary request: a clever Chinese office-philosophy meme, playing on Descartes' "我思故我在": the exact main headline is "我司雇我在". It means my company employs me, therefore I am here. Make it amusing, calm, polished and suitable to leave on a desk monitor for hours.
+Scene: a sleepy capybara office worker in the pose of Rodin's Thinker, seated on a small office stool beside an absurdly tiny keyboard, holding a coffee cup, wearing a simple blank employee badge. A little philosophical thought cloud contains one tiny loading spinner drawn as an illustration, not an actual OS interface.
+Style: charming original editorial illustration, confident hand-drawn ink contours, subtle screenprint grain, warm ivory paper, charcoal ink, muted persimmon orange and dusty teal accents; sophisticated poster composition with plenty of breathing room, no photorealism.
+Composition: very large bold perfectly legible Chinese headline across upper-middle area; capybara sits below it, centered slightly to the right. Keep all important content safely within the central 75 percent for display aspect-fill cropping.
+Text (verbatim): main headline "我司雇我在"; one small English line "I AM PAID, THEREFORE I AM."; one small Chinese footer "正在进行低功耗哲学思考".
+Constraints: exactly these three text strings, correct characters, original artwork, no UU/NetEase or other existing company logos, no watermark, no fake system update dialog, no extra text. Wallpaper only, no monitor frame, no UI mockup.

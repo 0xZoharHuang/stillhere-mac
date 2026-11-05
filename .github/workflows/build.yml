@@ -1,0 +1,25 @@
+name: macOS build
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Password and storage checks
+        run: swift test
+      - name: Build universal application
+        run: bash scripts/build-app.sh --universal
+      - name: Package application
+        run: bash scripts/package.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: StillHere-mac
+          path: |
+            dist/StillHere-0.1.0-mac.zip
+            dist/StillHere-0.1.0-mac.dmg
+            dist/SHA256SUMS.txt

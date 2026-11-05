@@ -1,0 +1,97 @@
+{
+  "product": "StillHere",
+  "version": "0.1.0",
+  "os": "macOS 15.5",
+  "osBuild": "24F74",
+  "recordedAtUTC": "2026-11-05T14:41:04.595335+00:00",
+  "runtimeArchitecture": "arm64",
+  "builtArchitectures": [
+    "x86_64",
+    "arm64"
+  ],
+  "packagedBundleManifest": {
+    "Contents/Helpers/capture_probe": {
+      "sha256": "f5df6bb0e19842bcdcc81b61c7631da96a276a1f2b6ea0b730515f6b4e3220df",
+      "bytes": 178144
+    },
+    "Contents/Info.plist": {
+      "sha256": "26d4b5718ad8f102a3ad660bbeead7fb9806ec46dbb3a0d4c97001828302e96a",
+      "bytes": 866
+    },
+    "Contents/MacOS/StillHere": {
+      "sha256": "8a4a8bf9cd34737a02b5530e6976675a6c8689b92d28ff3bb3d74193f808cdc8",
+      "bytes": 809568
+    },
+    "Contents/Resources/AppIcon.icns": {
+      "sha256": "1913bd93db1d036e0a0513ae7fa1d8fb0f28b00e3a3bdffebc807117bc5d499f",
+      "bytes": 120512
+    },
+    "Contents/Resources/ExistentialCapybara.png": {
+      "sha256": "b230d212702e95317cde765e4deb244c34317ce00eb412c852414f030cb35459",
+      "bytes": 3020066
+    },
+    "Contents/_CodeSignature/CodeResources": {
+      "sha256": "fb228a5f341dbcb2df2fa41b895af70e4de45176513c086ca5336d9fb0eadac0",
+      "bytes": 2977
+    }
+  },
+  "installedBundleReadbackMatches": true,
+  "coreChecks": {
+    "passed": 7,
+    "failed": 0,
+    "runner": "swift test"
+  },
+  "nativeAutomation": {
+    "surface": "CUA native app control",
+    "readScreenWhileProtected": true,
+    "clickWhileProtected": true,
+    "typeWhileProtected": true,
+    "readUpdatedContentWhileProtected": true,
+    "observedOutput": "已记录 #1：StillHere final build pass",
+    "liveClockContinued": true,
+    "manualShortcutEnabledPrivacy": true,
+    "manualShortcutOpenedPasswordDialog": true,
+    "wrongPasswordKeptPrivacy": true,
+    "cancelKeptPrivacy": true,
+    "protectedQuitRequiredPassword": true,
+    "correctPasswordExitedApp": true,
+    "powerAssertionsReleasedOnExit": true
+  },
+  "displayCoverage": {
+    "connectedDisplays": 2,
+    "activePrivacyWindowsDuringNativeTest": 2,
+    "allIgnoreMouseEvents": true,
+    "noneCanBecomeKey": true,
+    "allReportedVisible": true,
+    "observation": "application runtime properties; both displays separately passed the corner capture probe"
+  },
+  "settingsVisualQA": {
+    "passed": true,
+    "contentSizePoints": [
+      590,
+      700
+    ],
+    "wallpaperPreviewVisible": true,
+    "controlsVisible": true
+  },
+  "finalState": {
+    "running": true,
+    "protected": false,
+    "authenticationDialogOpen": false,
+    "powerAssertionCount": 0
+  },
+  "permissionChanges": {
+    "newGUIScreenRecordingGrant": false,
+    "diagnosticUsedExistingAuthorizedCaller": true
+  },
+  "unverified": [
+    "physical-panel human observation",
+    "independent live UU remote session",
+    "macOS versions other than 15.5",
+    "runtime on Intel hardware"
+  ],
+  "distribution": {
+    "signing": "ad-hoc",
+    "appleNotarized": false
+  }
+}

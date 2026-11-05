@@ -1,0 +1,59 @@
+{
+  "explicit_exclusion_sck": {
+    "status": "captured",
+    "height": 160,
+    "classification": "underlying_desktop",
+    "greenFraction": 1,
+    "blackFraction": 0,
+    "magentaFraction": 0,
+    "width": 300,
+    "file": "explicit-exclusion-sck.png"
+  },
+  "os": "Version 15.5 (Build 24F74)",
+  "protected_sck": {
+    "status": "captured",
+    "height": 160,
+    "classification": "underlying_desktop",
+    "greenFraction": 1,
+    "blackFraction": 0,
+    "magentaFraction": 0,
+    "width": 300,
+    "file": "protected-sck.png"
+  },
+  "frontmostAppUnchanged": 1,
+  "probeTookKeyboardFocus": 0,
+  "status": "completed",
+  "protected_legacy": {
+    "status": "captured",
+    "height": 160,
+    "classification": "underlying_desktop",
+    "greenFraction": 1,
+    "blackFraction": 0,
+    "magentaFraction": 0,
+    "width": 300,
+    "file": "protected-legacy.png"
+  },
+  "requestedPermissions": false,
+  "injectedInput": false,
+  "normal_sck": {
+    "status": "captured",
+    "height": 160,
+    "classification": "privacy_overlay_visible",
+    "greenFraction": 0,
+    "blackFraction": 0,
+    "magentaFraction": 1,
+    "width": 300,
+    "file": "normal-sck.png"
+  },
+  "normal_legacy": {
+    "status": "captured",
+    "height": 160,
+    "classification": "privacy_overlay_visible",
+    "greenFraction": 0,
+    "blackFraction": 0,
+    "magentaFraction": 1,
+    "width": 300,
+    "file": "normal-legacy.png"
+  },
+  "verificationScope": "nonactivating corner patch; normal controls plus legacy and unfiltered ScreenCaptureKit captures"
+}
