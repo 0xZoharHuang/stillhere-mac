@@ -18,32 +18,35 @@ namespace StillHere.Windows {
         [DataMember] public bool AuthenticationOpen;
         [DataMember] public bool CaptureQualified;
         [DataMember] public bool ShortcutRegistered;
+        [DataMember] public string LastCommand;
+        [DataMember] public int ShortcutPressCount;
         [DataMember] public string UpdatedAt;
     }
-    internal sealed class CommandWindow : NativeWindow,IDisposable {
+    internal sealed class CommandWindow : Form {
         private readonly Action<string> action;
-        private readonly Queue<string> pending=new Queue<string>();
         internal bool ShortcutRegistered;
         internal CommandWindow(string title,Action<string> handler) {
-            action=handler; CreateParams p=new CreateParams(); p.Caption=title;
-            CreateHandle(p);
+            action=handler; Text=title; ShowInTaskbar=false;
+            FormBorderStyle=FormBorderStyle.None; StartPosition=FormStartPosition.Manual;
+            Bounds=new Rectangle(-32000,-32000,1,1);
             ShortcutRegistered=Native.RegisterHotKey(Handle,1,0x4007,0x50);
         }
         protected override void WndProc(ref Message m) {
-            if(m.Msg==Native.HotKey) { action("toggle"); return; }
-            if(m.Msg==0x8001) { if(pending.Count>0) action(pending.Dequeue()); return; }
+            if(m.Msg==Native.HotKey && m.WParam==new IntPtr(1)) {
+                BeginInvoke((Action)delegate { action("toggle"); }); m.Result=IntPtr.Zero; return;
+            }
             if(m.Msg==Native.CopyData) {
                 Native.CopyDataValue value=(Native.CopyDataValue)Marshal.PtrToStructure(m.LParam,typeof(Native.CopyDataValue));
                 if(value.Tag==new IntPtr(1) && value.Length>0 && value.Length<=512) {
-                    pending.Enqueue(Marshal.PtrToStringUni(value.Data));
-                    Native.PostMessage(Handle,0x8001,IntPtr.Zero,IntPtr.Zero);
+                    string command=Marshal.PtrToStringUni(value.Data);
+                    BeginInvoke((Action)delegate { action(command); });
                     m.Result=new IntPtr(1);
                 }
                 return;
             }
             base.WndProc(ref m);
         }
-        public void Dispose() { Native.UnregisterHotKey(Handle,1); DestroyHandle(); }
+        protected override void Dispose(bool disposing) { if(IsHandleCreated) Native.UnregisterHotKey(Handle,1); base.Dispose(disposing); }
     }
     internal sealed partial class TrayContext : ApplicationContext {
         private readonly Store store;
@@ -54,6 +57,8 @@ namespace StillHere.Windows {
         private readonly List<PrivacySurface> surfaces=new List<PrivacySurface>();
         private Image image;
         private bool authenticationOpen,probing,quitting;
+        private string lastCommand;
+        private int shortcutPressCount;
         private int failedAttempts;
         private DateTime retryAfter=DateTime.MinValue;
         private AutomationFixture fixture;
@@ -96,6 +101,10 @@ namespace StillHere.Windows {
             using(Image source=Image.FromStream(stream)) return new Bitmap(source);
         }
         private void HandleCommand(string command) {
+            if(command!="toggle" && command!="shield" && command!="unlock" && command!="quit" && command!="settings" && command!="fixture") return;
+            lastCommand=command;
+            if(command=="toggle") shortcutPressCount++;
+            Publish(true);
             switch(command) {
                 case "toggle": Toggle(); break;
                 case "shield": Enable(); break;
@@ -208,7 +217,8 @@ namespace StillHere.Windows {
             if(status!=null) { status.Text=text; toggle.Text=Active?"输入密码，解除防窥…":"开启隐私壁纸"; settings.Enabled=!Active; }
             if(tray!=null) tray.Text=text;
             try { store.Save("runtime.json",new RuntimeState { Running=running,Protected=Active,PrivacyWindows=surfaces.Count,Screens=Screen.AllScreens.Length,
-                AuthenticationOpen=authenticationOpen,CaptureQualified=store.Qualified(),ShortcutRegistered=commands.ShortcutRegistered,UpdatedAt=DateTime.UtcNow.ToString("o") }); }
+                AuthenticationOpen=authenticationOpen,CaptureQualified=store.Qualified(),ShortcutRegistered=commands.ShortcutRegistered,
+                LastCommand=lastCommand,ShortcutPressCount=shortcutPressCount,UpdatedAt=DateTime.UtcNow.ToString("o") }); }
             catch(Exception e) { System.Diagnostics.Debug.WriteLine(e.Message); }
         }
         private static void Error(string text) { MessageBox.Show(text,"在场 · StillHere",MessageBoxButtons.OK,MessageBoxIcon.Warning); }

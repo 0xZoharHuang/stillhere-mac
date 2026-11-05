@@ -13,6 +13,7 @@ namespace StillHere.Windows {
         [DataMember] public string Source="guarded Windows SendInput on the application's own temporary QA fixture";
         [DataMember] public string Phase="starting";
         [DataMember] public bool ShortcutEnabled;
+        [DataMember] public bool ShortcutRegistered;
         [DataMember] public bool TypedAndClickedWhileProtected;
         [DataMember] public bool WrongPasswordRejected;
         [DataMember] public bool CancelKeptProtection;
@@ -80,6 +81,8 @@ namespace StillHere.Windows {
             inputWatchdog.Start();
             try {
                 await Task.Delay(600);
+                inputAcceptance.ShortcutRegistered=commands.ShortcutRegistered;
+                if(!commands.ShortcutRegistered) throw new InvalidOperationException("The QA shortcut was not registered; no shortcut input was sent.");
                 AcquireOwnFixture(); await Task.Delay(250);
                 if(Native.GetForegroundWindow()!=fixture.Handle) throw new InvalidOperationException("The QA fixture did not become the foreground window.");
                 fixture.TopMost=false;
@@ -107,7 +110,8 @@ namespace StillHere.Windows {
                 await WaitFor(delegate { return authenticationOpen; },3000); await Task.Delay(300); RequireOwnPasswordDialog();
                 TypeUnicode(password); Press(0x0D);
             } catch(Exception e) {
-                inputAcceptance.Error=e.Message; inputAcceptance.Phase="failed"; SaveInputAcceptance(); HidePrivacy(); ExitThread();
+                inputAcceptance.Error=e.Message+" LastCommand="+(lastCommand??"none")+" CaptureQualified="+store.Qualified()+" Probing="+probing;
+                inputAcceptance.Phase="failed"; SaveInputAcceptance(); HidePrivacy(); ExitThread();
             }
         }
         private void FinishInputAcceptance() {

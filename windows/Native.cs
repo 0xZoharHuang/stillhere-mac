@@ -45,7 +45,7 @@ namespace StillHere.Windows {
             try {
                 CopyDataValue message=new CopyDataValue { Tag=new IntPtr(1), Length=(command.Length+1)*2, Data=data };
                 IntPtr result;
-                return SendMessageTimeout(window,CopyData,IntPtr.Zero,ref message,2,2000,out result)!=IntPtr.Zero;
+                return SendMessageTimeout(window,CopyData,IntPtr.Zero,ref message,2,2000,out result)!=IntPtr.Zero && result==new IntPtr(1);
             } finally { Marshal.FreeHGlobal(data); }
         }
     }
