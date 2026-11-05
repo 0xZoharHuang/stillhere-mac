@@ -8,3 +8,5 @@ research/probe-results/
 verification/private/
 *.dSYM/
 .DS_Store
+windows/bin/
+windows/obj/

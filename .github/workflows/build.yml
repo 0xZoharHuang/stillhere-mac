@@ -25,3 +25,29 @@ jobs:
             dist/StillHere-0.1.0-mac.zip
             dist/StillHere-0.1.0-mac.dmg
             dist/SHA256SUMS.txt
+  windows:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build native Windows application
+        shell: cmd
+        run: windows\build.cmd
+      - name: Password, storage, and compatibility checks
+        shell: pwsh
+        run: |
+          $process = Start-Process -FilePath dist/windows/StillHere.exe -ArgumentList '--core-self-test','--output',"$PWD/dist/windows/core-tests.json" -Wait -PassThru
+          Get-Content dist/windows/core-tests.json
+          if ($process.ExitCode -ne 0) { throw "Windows core checks failed: $($process.ExitCode)" }
+      - name: Package Windows application
+        shell: pwsh
+        run: |
+          Compress-Archive -LiteralPath dist/windows/StillHere.exe -DestinationPath dist/StillHere-0.1.0-windows.zip
+          $hash = (Get-FileHash dist/StillHere-0.1.0-windows.zip -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$hash  StillHere-0.1.0-windows.zip" | Set-Content -Encoding ascii dist/SHA256SUMS-windows.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: StillHere-windows
+          path: |
+            dist/StillHere-0.1.0-windows.zip
+            dist/SHA256SUMS-windows.txt
+            dist/windows/core-tests.json
