@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace StillHere.Windows {
     internal sealed class PrivacySurface : Form {
@@ -55,6 +56,19 @@ namespace StillHere.Windows {
     }
     internal static class CaptureProbe {
         internal static CaptureResult Run() {
+            CaptureResult result=null;
+            using(ApplicationContext context=new ApplicationContext())
+            using(Timer kickoff=new Timer { Interval=1 }) {
+                kickoff.Tick+=async delegate {
+                    kickoff.Stop();
+                    try { result=await RunAsync(); }
+                    finally { context.ExitThread(); }
+                };
+                kickoff.Start(); Application.Run(context);
+            }
+            return result;
+        }
+        internal static async Task<CaptureResult> RunAsync() {
             CaptureResult result=new CaptureResult { OS=Environment.OSVersion.Version.ToString() };
             if(Environment.OSVersion.Version.Build<19041) { result.Error="需要 Windows 10 2004 或更新版本。"; return result; }
             IntPtr before=Native.GetForegroundWindow();
@@ -64,11 +78,11 @@ namespace StillHere.Windows {
             try {
                 target=new PrivacySurface(bounds,Color.Lime,null,false); target.Present();
                 mask=new PrivacySurface(bounds,Color.Magenta,null,false); mask.Present();
-                Settle(); result.Normal=Sample(bounds);
+                await Task.Delay(250); result.Normal=Sample(bounds);
                 mask.SetExcluded(); result.AffinityApplied=true;
-                Settle(); result.Excluded=Sample(bounds);
+                await Task.Delay(250); result.Excluded=Sample(bounds);
                 target.BackColor=Color.Cyan; target.Invalidate(); target.Update();
-                Settle(); result.LiveUpdate=Sample(bounds);
+                await Task.Delay(250); result.LiveUpdate=Sample(bounds);
             } catch(Exception e) { result.Error=e.Message; }
             finally {
                 IntPtr foreground=Native.GetForegroundWindow();
@@ -77,9 +91,6 @@ namespace StillHere.Windows {
                 if(mask!=null) mask.Dispose(); if(target!=null) target.Dispose();
             }
             return result;
-        }
-        private static void Settle() {
-            for(int i=0;i<5;i++) { Application.DoEvents(); System.Threading.Thread.Sleep(50); }
         }
         private static string Sample(Rectangle bounds) {
             using(Bitmap image=new Bitmap(bounds.Width,bounds.Height))

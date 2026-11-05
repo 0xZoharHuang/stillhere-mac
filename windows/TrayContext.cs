@@ -141,11 +141,13 @@ namespace StillHere.Windows {
             foreach(PrivacySurface surface in surfaces) surface.Dispose(); surfaces.Clear();
             Native.SetThreadExecutionState(0x80000000); Publish(true);
         }
-        private void Diagnose(bool enableAfter) {
+        private async void Diagnose(bool enableAfter) {
             if(probing || Active) return;
             probing=true;
             try {
-                CaptureResult result=CaptureProbe.Run(); store.Save("compatibility.json",result);
+                CaptureResult result=await CaptureProbe.RunAsync();
+                if(quitting) return;
+                store.Save("compatibility.json",result);
                 if(!result.Passed) Error("采集检查未通过，未开启全屏壁纸。请确认电脑已进入正常桌面。\n"+result.Error);
                 else if(enableAfter) EnableAfterProbe();
                 else MessageBox.Show("截图已排除保护层，下面画面能继续更新。请再验证实际自动化。","检查通过");
