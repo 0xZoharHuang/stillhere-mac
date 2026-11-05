@@ -45,7 +45,7 @@ namespace StillHere.Windows {
         }
         public void Dispose() { Native.UnregisterHotKey(Handle,1); DestroyHandle(); }
     }
-    internal sealed class TrayContext : ApplicationContext {
+    internal sealed partial class TrayContext : ApplicationContext {
         private readonly Store store;
         private readonly NotifyIcon tray;
         private readonly CommandWindow commands;
@@ -59,7 +59,7 @@ namespace StillHere.Windows {
         private AutomationFixture fixture;
         private ToolStripMenuItem status,toggle,settings;
         private bool Active { get { return surfaces.Count>0; } }
-        internal TrayContext(Store storage,bool showFixture) {
+        internal TrayContext(Store storage,bool showFixture,string qaPassword=null,string qaOutput=null) {
             store=storage;
             try { preferences=store.Read<Preferences>("preferences.json")??new Preferences(); } catch { preferences=new Preferences(); }
             image=LoadImage();
@@ -82,6 +82,7 @@ namespace StillHere.Windows {
                 startup.Stop(); startup.Dispose();
                 if(showFixture) ShowFixture();
                 else { try { if(store.LoadCredential()==null) Settings(); } catch(Exception e) { Error(e.Message); } }
+                if(qaOutput!=null) StartInputAcceptance(qaPassword,qaOutput);
             };
             startup.Start();
         }
@@ -159,7 +160,7 @@ namespace StillHere.Windows {
                         failedAttempts=0; retryAfter=DateTime.MinValue; return null;
                     } catch(Exception e) { return e.Message; }
                 })) {
-                    if(dialog.ShowDialog()==DialogResult.OK) { HidePrivacy(); if(quit) ExitThread(); }
+                    if(dialog.ShowDialog()==DialogResult.OK) { HidePrivacy(); if(quit) { if(inputAcceptance!=null) inputAcceptance.CorrectPasswordExited=true; ExitThread(); } }
                 }
             } finally { authenticationOpen=false; if(!quitting) Publish(true); }
         }
@@ -214,6 +215,7 @@ namespace StillHere.Windows {
         protected override void ExitThreadCore() {
             if(quitting) return; quitting=true;
             HidePrivacy(); Publish(false); SystemEvents.DisplaySettingsChanged-=DisplaysChanged;
+            FinishInputAcceptance();
             if(fixture!=null) fixture.Dispose(); tray.Visible=false; tray.Dispose(); commands.Dispose(); image.Dispose();
             base.ExitThreadCore();
         }

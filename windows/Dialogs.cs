@@ -53,6 +53,9 @@ namespace StillHere.Windows {
         }
     }
     internal sealed class AutomationFixture : Form {
+        internal TextBox InputField;
+        internal Button RecordButton;
+        internal Label RecordedOutput;
         internal AutomationFixture() {
             Text="StillHere Windows Automation Laboratory"; ClientSize=new Size(530,260);
             StartPosition=FormStartPosition.CenterScreen; Font=SystemFonts.MessageBoxFont;
@@ -60,6 +63,7 @@ namespace StillHere.Windows {
             Label output=new Label { Left=25,Top=165,Width=475,Height=30,Text="尚未记录",AccessibleName="验证结果" };
             Label clock=new Label { Left=25,Top=208,Width=475 };
             Button button=new Button { Left=25,Top=117,Width=110,Text="记录输入",AccessibleName="记录输入" };
+            InputField=input; RecordButton=button; RecordedOutput=output;
             int count=0; button.Click+=delegate { count++; output.Text="已记录 #"+count+"："+input.Text; };
             Label title=new Label { Left=25,Top=24,Width=475,Text="防窥期间读屏、点击与输入验证",Height=32,Font=new Font(Font.FontFamily,16,FontStyle.Bold) };
             Timer timer=new Timer { Interval=1000 }; timer.Tick+=delegate { clock.Text="实时更新："+DateTime.Now.ToString("HH:mm:ss"); }; timer.Start();

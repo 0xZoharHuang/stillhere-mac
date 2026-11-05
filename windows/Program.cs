@@ -34,11 +34,13 @@ namespace StillHere.Windows {
                 try { Native.SetProcessDpiAwarenessContext(new IntPtr(-4)); } catch(EntryPointNotFoundException) { }
                 Application.EnableVisualStyles(); Application.SetCompatibleTextRenderingDefault(false);
                 string root=Environment.GetEnvironmentVariable("STILLHERE_DATA_DIR")??Store.DefaultRoot;
-                bool qa=args.Contains("--qa");
+                bool qa=args.Contains("--qa") || args.Contains("--qa-run-ui");
+                string qaPassword=null;
                 if(qa) {
                     root=Path.Combine(Path.GetTempPath(),"StillHere-QA-"+Guid.NewGuid().ToString("N"));
                     byte[] bytes=new byte[8]; using(RandomNumberGenerator rng=RandomNumberGenerator.Create()) rng.GetBytes(bytes);
                     string password=BitConverter.ToString(bytes).Replace("-","");
+                    qaPassword=password;
                     Store test=new Store(root); test.Save("credential.json",Credential.Create(password));
                     new Store(Store.DefaultRoot).Save("qa-session.json",new QAInfo { DataDirectory=root,Password=password });
                 }
@@ -62,7 +64,8 @@ namespace StillHere.Windows {
                 using(Mutex mutex=new Mutex(true,"Local\\StillHere."+store.Scope,out created)) {
                     if(!created) return Native.SendCommand("StillHere.Command."+store.Scope,action??"settings")?0:3;
                     if(action!=null && action!="fixture") { mutex.ReleaseMutex(); return 3; }
-                    try { Application.Run(new TrayContext(store,qa || action=="fixture")); }
+                    string qaOutput=args.Contains("--qa-run-ui")?(output??Path.Combine(Store.DefaultRoot,"qa-last-result.json")):null;
+                    try { Application.Run(new TrayContext(store,qa || action=="fixture",qaPassword,qaOutput)); }
                     finally {
                         mutex.ReleaseMutex();
                         if(qa) {

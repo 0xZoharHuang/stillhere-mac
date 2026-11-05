@@ -22,6 +22,15 @@ namespace StillHere.Windows {
         [DllImport("kernel32.dll")] internal static extern uint SetThreadExecutionState(uint flags);
         [DllImport("kernel32.dll")] internal static extern bool AttachConsole(uint pid);
         [DllImport("user32.dll")] internal static extern bool SetProcessDpiAwarenessContext(IntPtr context);
+        [DllImport("user32.dll", SetLastError=true)] internal static extern uint SendInput(uint count,Input[] inputs,int size);
+        [DllImport("user32.dll")] internal static extern bool SetCursorPos(int x,int y);
+        [StructLayout(LayoutKind.Sequential)] internal struct Input { internal uint Type; internal InputData Data; }
+        [StructLayout(LayoutKind.Explicit)] internal struct InputData {
+            [FieldOffset(0)] internal MouseInput Mouse;
+            [FieldOffset(0)] internal KeyboardInput Keyboard;
+        }
+        [StructLayout(LayoutKind.Sequential)] internal struct MouseInput { internal int X,Y; internal uint MouseData,Flags,Time; internal IntPtr Extra; }
+        [StructLayout(LayoutKind.Sequential)] internal struct KeyboardInput { internal ushort Key,Scan; internal uint Flags,Time; internal IntPtr Extra; }
         [StructLayout(LayoutKind.Sequential)] internal struct CopyDataValue {
             internal IntPtr Tag;
             internal int Length;
