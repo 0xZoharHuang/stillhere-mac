@@ -25,6 +25,7 @@ namespace StillHere.Windows {
         private InputAcceptance inputAcceptance;
         private string inputAcceptanceOutput;
         private Timer inputWatchdog;
+        internal bool InputAcceptancePassed { get { return inputAcceptance!=null && inputAcceptance.Phase=="passed" && inputAcceptance.Error==null; } }
         private void SaveInputAcceptance() { if(inputAcceptance!=null && inputAcceptanceOutput!=null) Program.Output(inputAcceptance,inputAcceptanceOutput); }
         private async Task WaitFor(Func<bool> condition,int milliseconds) {
             DateTime until=DateTime.UtcNow.AddMilliseconds(milliseconds);
@@ -56,6 +57,17 @@ namespace StillHere.Windows {
                 new Native.Input { Type=0,Data=new Native.InputData { Mouse=new Native.MouseInput { Flags=4 } } }
             });
         }
+        private void AcquireOwnFixture() {
+            fixture.TopMost=true; fixture.BringToFront();
+            Point point=fixture.InputField.PointToScreen(new Point(fixture.InputField.Width/2,fixture.InputField.Height/2));
+            if(Native.GetAncestor(Native.WindowFromPoint(point),2)!=fixture.Handle)
+                throw new InvalidOperationException("The visible click target is not the QA fixture; input was not sent.");
+            Native.SetCursorPos(point.X,point.Y);
+            Inject(new List<Native.Input> {
+                new Native.Input { Type=0,Data=new Native.InputData { Mouse=new Native.MouseInput { Flags=2 } } },
+                new Native.Input { Type=0,Data=new Native.InputData { Mouse=new Native.MouseInput { Flags=4 } } }
+            });
+        }
         private void RequireOwnPasswordDialog() {
             Control form=Control.FromHandle(Native.GetForegroundWindow());
             if(!(form is PasswordDialog)) throw new InvalidOperationException("The password dialog is not the foreground window; input was not sent.");
@@ -68,7 +80,9 @@ namespace StillHere.Windows {
             inputWatchdog.Start();
             try {
                 await Task.Delay(600);
+                AcquireOwnFixture(); await Task.Delay(250);
                 if(Native.GetForegroundWindow()!=fixture.Handle) throw new InvalidOperationException("The QA fixture did not become the foreground window.");
+                fixture.TopMost=false;
                 inputAcceptance.Phase="enabling"; SaveInputAcceptance(); Shortcut();
                 await WaitFor(delegate { return Active; },6000);
                 inputAcceptance.ShortcutEnabled=true;

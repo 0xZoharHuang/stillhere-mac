@@ -65,7 +65,11 @@ namespace StillHere.Windows {
                     if(!created) return Native.SendCommand("StillHere.Command."+store.Scope,action??"settings")?0:3;
                     if(action!=null && action!="fixture") { mutex.ReleaseMutex(); return 3; }
                     string qaOutput=args.Contains("--qa-run-ui")?(output??Path.Combine(Store.DefaultRoot,"qa-last-result.json")):null;
-                    try { Application.Run(new TrayContext(store,qa || action=="fixture",qaPassword,qaOutput)); }
+                    try {
+                        TrayContext context=new TrayContext(store,qa || action=="fixture",qaPassword,qaOutput);
+                        Application.Run(context);
+                        if(qaOutput!=null && !context.InputAcceptancePassed) return 2;
+                    }
                     finally {
                         mutex.ReleaseMutex();
                         if(qa) {
