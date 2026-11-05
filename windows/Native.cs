@@ -14,6 +14,7 @@ namespace StillHere.Windows {
         [DllImport("user32.dll", SetLastError=true)] internal static extern bool RegisterHotKey(IntPtr window, int id, uint modifiers, uint key);
         [DllImport("user32.dll")] internal static extern bool UnregisterHotKey(IntPtr window, int id);
         [DllImport("user32.dll", CharSet=CharSet.Unicode)] internal static extern IntPtr FindWindow(string cls, string title);
+        [DllImport("user32.dll", SetLastError=true)] internal static extern bool PostMessage(IntPtr window, uint message, IntPtr wparam, IntPtr lparam);
         [DllImport("user32.dll", CharSet=CharSet.Unicode, SetLastError=true)] internal static extern IntPtr SendMessageTimeout(IntPtr window, uint message, IntPtr wparam, ref CopyDataValue value, uint flags, uint timeout, out IntPtr result);
         [DllImport("user32.dll")] internal static extern IntPtr GetDC(IntPtr window);
         [DllImport("user32.dll")] internal static extern int ReleaseDC(IntPtr window, IntPtr dc);

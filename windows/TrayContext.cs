@@ -22,6 +22,7 @@ namespace StillHere.Windows {
     }
     internal sealed class CommandWindow : NativeWindow,IDisposable {
         private readonly Action<string> action;
+        private readonly Queue<string> pending=new Queue<string>();
         internal bool ShortcutRegistered;
         internal CommandWindow(string title,Action<string> handler) {
             action=handler; CreateParams p=new CreateParams(); p.Caption=title;
@@ -30,10 +31,13 @@ namespace StillHere.Windows {
         }
         protected override void WndProc(ref Message m) {
             if(m.Msg==Native.HotKey) { action("toggle"); return; }
+            if(m.Msg==0x8001) { if(pending.Count>0) action(pending.Dequeue()); return; }
             if(m.Msg==Native.CopyData) {
                 Native.CopyDataValue value=(Native.CopyDataValue)Marshal.PtrToStructure(m.LParam,typeof(Native.CopyDataValue));
                 if(value.Tag==new IntPtr(1) && value.Length>0 && value.Length<=512) {
-                    action(Marshal.PtrToStringUni(value.Data)); m.Result=new IntPtr(1);
+                    pending.Enqueue(Marshal.PtrToStringUni(value.Data));
+                    Native.PostMessage(Handle,0x8001,IntPtr.Zero,IntPtr.Zero);
+                    m.Result=new IntPtr(1);
                 }
                 return;
             }

@@ -72,7 +72,7 @@ namespace StillHere.Windows {
             } catch(Exception e) { result.Error=e.Message; }
             finally {
                 IntPtr foreground=Native.GetForegroundWindow();
-                result.ProbeTookFocus=(mask!=null && foreground==mask.Handle) || (target!=null && foreground==target.Handle);
+                result.ProbeTookFocus=(mask!=null && mask.IsHandleCreated && foreground==mask.Handle) || (target!=null && target.IsHandleCreated && foreground==target.Handle);
                 result.ForegroundUnchanged=before==foreground;
                 if(mask!=null) mask.Dispose(); if(target!=null) target.Dispose();
             }
