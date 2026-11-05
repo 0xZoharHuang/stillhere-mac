@@ -57,7 +57,7 @@ namespace StillHere.Windows {
             });
         }
         private void RequireOwnPasswordDialog() {
-            Form form=Form.FromHandle(Native.GetForegroundWindow());
+            Control form=Control.FromHandle(Native.GetForegroundWindow());
             if(!(form is PasswordDialog)) throw new InvalidOperationException("The password dialog is not the foreground window; input was not sent.");
         }
         private async void StartInputAcceptance(string password,string output) {
