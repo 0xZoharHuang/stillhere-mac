@@ -20,6 +20,7 @@ namespace StillHere.Windows {
         [DataMember] public bool QuitAcknowledged;
         [DataMember] public bool CorrectPasswordExited;
         [DataMember] public bool ProtectionReleased;
+        [DataMember] public CaptureResult CaptureQualification;
         [DataMember] public string Error;
     }
     internal sealed partial class TrayContext {
@@ -27,7 +28,11 @@ namespace StillHere.Windows {
         private string inputAcceptanceOutput;
         private Timer inputWatchdog;
         internal bool InputAcceptancePassed { get { return inputAcceptance!=null && inputAcceptance.Phase=="passed" && inputAcceptance.Error==null; } }
-        private void SaveInputAcceptance() { if(inputAcceptance!=null && inputAcceptanceOutput!=null) Program.Output(inputAcceptance,inputAcceptanceOutput); }
+        private void SaveInputAcceptance() {
+            if(inputAcceptance==null || inputAcceptanceOutput==null) return;
+            inputAcceptance.CaptureQualification=store.Read<CaptureResult>("compatibility.json");
+            Program.Output(inputAcceptance,inputAcceptanceOutput);
+        }
         private async Task WaitFor(Func<bool> condition,int milliseconds) {
             DateTime until=DateTime.UtcNow.AddMilliseconds(milliseconds);
             while(!condition()) { if(DateTime.UtcNow>until) throw new TimeoutException("Native input step timed out: "+inputAcceptance.Phase); await Task.Delay(100); }

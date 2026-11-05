@@ -28,7 +28,7 @@ namespace StillHere.Windows {
         [STAThread] private static int Main(string[] args) {
             string output=Value(args,"--output");
             try {
-                if(args.Length>0 && !args.Contains("--qa") && !args.Contains("--fixture")) Native.AttachConsole(0xFFFFFFFF);
+                if(args.Length>0 && !args.Contains("--qa") && !args.Contains("--qa-run-ui") && !args.Contains("--fixture")) Native.AttachConsole(0xFFFFFFFF);
                 if(args.Contains("--core-self-test")) return CoreTests.Run(output);
                 if(args.Contains("--version")) { Console.WriteLine("0.1.0"); return 0; }
                 try { Native.SetProcessDpiAwarenessContext(new IntPtr(-4)); } catch(EntryPointNotFoundException) { }

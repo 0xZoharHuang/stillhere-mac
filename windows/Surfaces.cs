@@ -32,7 +32,11 @@ namespace StillHere.Windows {
                 throw new Win32Exception(Marshal.GetLastWin32Error(),"无法启用截图排除，未开启防窥。");
         }
         internal void Present() {
-            Show(); Native.SetWindowPos(Handle,new IntPtr(-1),Bounds.X,Bounds.Y,Bounds.Width,Bounds.Height,0x10|0x40);
+            // Form.Show can explicitly activate a form when another form from
+            // this process is foreground. SWP_SHOWWINDOW | SWP_NOACTIVATE
+            // displays the native surface without that managed activation path.
+            if(!Native.SetWindowPos(Handle,new IntPtr(-1),Bounds.X,Bounds.Y,Bounds.Width,Bounds.Height,0x10|0x40))
+                throw new Win32Exception(Marshal.GetLastWin32Error());
         }
         protected override void WndProc(ref Message m) {
             if(m.Msg==0x21) { m.Result=new IntPtr(3); return; }

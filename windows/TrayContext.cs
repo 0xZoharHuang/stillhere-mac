@@ -130,6 +130,7 @@ namespace StillHere.Windows {
                 foreach(Screen screen in Screen.AllScreens) {
                     PrivacySurface surface=new PrivacySurface(screen.Bounds,Color.FromArgb(250,240,220),image,true);
                     next.Add(surface); surface.Present();
+                    if(Native.GetForegroundWindow()==surface.Handle) throw new InvalidOperationException("保护层取得了键盘焦点，未开启防窥。");
                 }
             } catch { foreach(PrivacySurface surface in next) surface.Dispose(); throw; }
             foreach(PrivacySurface surface in surfaces) surface.Dispose();
