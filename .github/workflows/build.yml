@@ -14,6 +14,8 @@ jobs:
         run: swift test
       - name: Build universal application
         run: bash scripts/build-app.sh --universal
+      - name: Packaging retry checks
+        run: bash Tests/Shell/packaging-retry.sh
       - name: Package application
         run: bash scripts/package.sh
       - uses: actions/upload-artifact@v4
