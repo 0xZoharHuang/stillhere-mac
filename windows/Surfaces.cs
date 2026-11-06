@@ -17,7 +17,7 @@ namespace StillHere.Windows {
                 // WS_EX_NOACTIVATE is in place before the HWND is created.
                 CreateHandle(new CreateParams {
                     Caption="StillHere Privacy Wallpaper",X=bounds.X,Y=bounds.Y,Width=bounds.Width,Height=bounds.Height,
-                    Style=unchecked((int)0x80000000),
+                    Style=unchecked((int)0x88000000), // WS_POPUP | WS_DISABLED: wallpaper has no input controls.
                     ExStyle=Native.NoActivate|Native.Transparent|Native.Layered|Native.ToolWindow|0x8
                 });
                 if(!Native.SetLayeredWindowAttributes(Handle,0,255,2)) throw new Win32Exception(Marshal.GetLastWin32Error());
