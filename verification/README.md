@@ -26,13 +26,17 @@ Raw per-user profiles, password verifiers, local runtime state, and desktop scre
 
 [distribution.json](distribution.json) records the ZIP and DMG checksums. Both were unpacked or mounted read-only, and every application-bundle file matched the built and installed copy. Deep, strict code-signature verification passed. The DMG's Applications shortcut points to `/Applications`, and the image was detached after the check. The build is ad-hoc signed and is not Apple-notarized.
 
-## Windows acceptance in progress
+## Windows desktop acceptance
 
-[application-windows10.json](application-windows10.json) separates the latest candidate from the last build actually run on the authorized Windows 10 / build 19045 host. The downloaded package and EXE matched the CI hashes. Seven core checks and the standalone GDI color, exclusion, live-update and focus checks passed.
+[application-windows-server2022.json](application-windows-server2022.json) records the final Windows Beta on a GitHub Windows Server 2022 / build 20348 interactive desktop (session 2). Seven core checks passed. Both the standalone and first-enable capture probes passed the ordinary-cover positive control, exclusion, live-update and unchanged-foreground checks.
 
-The full native input journey caught a different case: when our own fixture was already foreground, the managed wallpaper forms took focus during first-enable qualification. Color capture passed, but the focus gate rejected activation; the QA process exited with code 2 and released its own protection. That is a failed acceptance result, not a successful product test.
+The actual `SendInput` journey passed shortcut activation, typing and clicking the real fixture while protected, rejection of a wrong password, cancellation that kept protection, and a correct password that exited and released protection. The ZIP contains the exact EXE tested in that run; the packaged executable hash matches the test environment record. No screenshot exclusion list is supplied by the input test.
 
-The current candidate replaces those surfaces with raw, disabled, nonactivating Win32 popup windows. It passed compilation and seven CI core checks. Its final host input/password journey remains unverified. No normal Windows password profile has been configured or shipped in the public package. Physical-panel observation is separate from remote capture, which intentionally omits the wallpaper.
+[application-windows10.json](application-windows10.json) separately preserves the last build actually run on the authorized Windows 10 / build 19045 host. Its package and EXE matched the CI hashes; seven core checks and standalone capture passed. Its full input journey caught managed wallpaper forms taking focus when our fixture was foreground. The focus gate rejected activation, and the QA process exited with code 2 and released its own protection. This was a failed acceptance result. Raw, disabled, nonactivating Win32 windows fixed that failure in the independent Server 2022 journey; the final build still needs to be rechecked on the Windows 10 host.
+
+No normal Windows password profile has been configured or shipped in the public package. Physical-panel observation and an independent remote input journey with the final Windows build remain unverified. These limits are separate from the completed native desktop input test.
+
+[distribution-windows.json](distribution-windows.json) records a fresh download from the published Windows Beta release. Its ZIP, extracted EXE, and checksum file all match the package and executable from the successful desktop acceptance run.
 
 ## Reproduce
 

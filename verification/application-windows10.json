@@ -2,7 +2,7 @@
   "product": "StillHere",
   "version": "0.1.0",
   "status": "acceptance-in-progress",
-  "recordedAtUTC": "2026-11-06T04:47:55.825662+00:00",
+  "recordedAtUTC": "2026-11-06T04:54:15.022525+00:00",
   "host": {
     "os": "Windows 10 22H2",
     "version": "10.0.19045.0",
@@ -11,16 +11,17 @@
     "displayCount": 1
   },
   "latestCandidate": {
-    "commit": "1e1a16563054f5aaee914fcfe101ef7f500a472a",
-    "release": "windows-v0.1.0-rc.6",
+    "commit": "491cd8f971769a451818a66a98fcdac4849b1e7e",
+    "release": "windows-v0.1.0",
     "nativeHostTested": false,
-    "ciRun": 42163903529,
+    "desktopWorkflowRun": 42164978290,
+    "desktopVerifiedOS": "10.0.20348.0",
     "coreChecksPassed": 7,
     "zip": {
-      "bytes": 3011466,
-      "sha256": "7899d8c8b548b87f96642e52d54734056bdb8b24cb5b2cbcf3f4ed02daeb869e"
+      "bytes": 3011495,
+      "sha256": "cb69a39b39a06021cb1b10c4278b5b8656979f0ee07eac14f277d4da86b9fc30"
     },
-    "exeSHA256": "7c4710aefe06befb46020cffdb3abe42396c9105e06855abfea0dd22acbda037"
+    "exeSHA256": "cb251649e5bbba86025b418068eced43f92e1ac64513ea84ee4352cd60238076"
   },
   "lastHostTest": {
     "commit": "e6b20e292350559678667385800d396a37b41004",
@@ -64,5 +65,6 @@
     "passwordsAndVerifiersIncluded": false,
     "desktopScreenshotsIncluded": false,
     "normalUserProfileModified": false
-  }
+  },
+  "crossEnvironmentAcceptance": "application-windows-server2022.json"
 }

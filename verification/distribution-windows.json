@@ -1,0 +1,15 @@
+{
+  "version": "0.1.0",
+  "release": "windows-v0.1.0",
+  "recordedAtUTC": "2026-11-06T04:55:31.397144+00:00",
+  "workflowRun": 42164978290,
+  "publishedZIPMatchesTestedPackage": true,
+  "publishedEXEMatchesTestedExecutable": true,
+  "checksumFileMatches": true,
+  "zip": {
+    "file": "StillHere-0.1.0-windows.zip",
+    "bytes": 3011495,
+    "sha256": "cb69a39b39a06021cb1b10c4278b5b8656979f0ee07eac14f277d4da86b9fc30"
+  },
+  "exeSHA256": "cb251649e5bbba86025b418068eced43f92e1ac64513ea84ee4352cd60238076"
+}

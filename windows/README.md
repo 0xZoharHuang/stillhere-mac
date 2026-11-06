@@ -2,7 +2,9 @@
 
 Windows 原生托盘版本，使用系统自带的 .NET Framework 4.8，无需安装新的 .NET SDK。最低系统为 Windows 10 2004 / build 19041。
 
-当前处于构建和实际机器验收阶段；编译、核心检查、采集检查与真实远程操作分别记录，不把其中一个当作全部完成。
+当前为 [0.1.0 Beta](https://github.com/0xZoharHuang/stillhere-mac/releases/tag/windows-v0.1.0)。已在 GitHub 的 Windows Server 2022 / build 20348 交互桌面上通过完整原生验收：采集排除与更新、不抢焦点、快捷键、保护下打字和点击、错误密码、取消、正确密码退出。发布包包含该流程实际测试过的同一份 EXE。
+
+记录见 [application-windows-server2022.json](../verification/application-windows-server2022.json)。指定 Windows 10 / build 19045 电脑的最终版本复测和实体显示器观察仍待完成，见 [application-windows10.json](../verification/application-windows10.json)。
 
 ## 构建
 

@@ -1,0 +1,65 @@
+{
+  "product": "StillHere",
+  "version": "0.1.0",
+  "status": "passed",
+  "recordedAtUTC": "2026-11-06T04:54:15.022525+00:00",
+  "runner": "GitHub hosted windows-2022 interactive desktop",
+  "workflowRun": 42164978290,
+  "environment": {
+    "OS": "Microsoft Windows NT 10.0.20348.0",
+    "ProcessSession": 2,
+    "ExeSHA256": "cb251649e5bbba86025b418068eced43f92e1ac64513ea84ee4352cd60238076",
+    "Commit": "491cd8f971769a451818a66a98fcdac4849b1e7e"
+  },
+  "core": {
+    "Failures": [],
+    "Passed": 7
+  },
+  "capture": {
+    "AffinityApplied": true,
+    "Error": null,
+    "Excluded": "green",
+    "ForegroundUnchanged": true,
+    "LiveUpdate": "cyan",
+    "Normal": "magenta",
+    "OS": "10.0.20348.0",
+    "ProbeTookFocus": false
+  },
+  "nativeInput": {
+    "CancelKeptProtection": true,
+    "CaptureQualification": {
+      "AffinityApplied": true,
+      "Error": null,
+      "Excluded": "green",
+      "ForegroundUnchanged": true,
+      "LiveUpdate": "cyan",
+      "Normal": "magenta",
+      "OS": "10.0.20348.0",
+      "ProbeTookFocus": false
+    },
+    "CorrectPasswordExited": true,
+    "Error": null,
+    "Phase": "passed",
+    "ProtectionReleased": true,
+    "QuitAcknowledged": true,
+    "ShortcutEnabled": true,
+    "ShortcutRegistered": true,
+    "Source": "guarded Windows SendInput on the application's own temporary QA fixture",
+    "TypedAndClickedWhileProtected": true,
+    "WrongPasswordRejected": true
+  },
+  "distribution": {
+    "release": "windows-v0.1.0",
+    "zipBytes": 3011495,
+    "zipSHA256": "cb69a39b39a06021cb1b10c4278b5b8656979f0ee07eac14f277d4da86b9fc30",
+    "exeSHA256": "cb251649e5bbba86025b418068eced43f92e1ac64513ea84ee4352cd60238076",
+    "testedExecutableMatchesPackagedExecutable": true,
+    "signing": "unsigned"
+  },
+  "unverified": [
+    "Human physical-panel observation",
+    "Final build on the authorized Windows 10 / build 19045 host",
+    "Independent remote keyboard/mouse journey with the final Windows build",
+    "Other Windows builds and capture implementations"
+  ]
+}
