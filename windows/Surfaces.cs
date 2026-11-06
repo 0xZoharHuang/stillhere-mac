@@ -70,6 +70,10 @@ namespace StillHere.Windows {
     internal static class CaptureProbe {
         internal static CaptureResult Run() {
             CaptureResult result=null;
+            // Raw NativeWindow creation does not install a Control's UI
+            // synchronization context. Keep all awaits and HWND destruction
+            // on the STA that owns the diagnostic windows.
+            System.Threading.SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
             using(ApplicationContext context=new ApplicationContext())
             using(Timer kickoff=new Timer { Interval=1 }) {
                 kickoff.Tick+=async delegate {
