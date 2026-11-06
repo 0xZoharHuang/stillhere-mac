@@ -26,6 +26,14 @@ Raw per-user profiles, password verifiers, local runtime state, and desktop scre
 
 [distribution.json](distribution.json) records the ZIP and DMG checksums. Both were unpacked or mounted read-only, and every application-bundle file matched the built and installed copy. Deep, strict code-signature verification passed. The DMG's Applications shortcut points to `/Applications`, and the image was detached after the check. The build is ad-hoc signed and is not Apple-notarized.
 
+## Windows acceptance in progress
+
+[application-windows10.json](application-windows10.json) separates the latest candidate from the last build actually run on the authorized Windows 10 / build 19045 host. The downloaded package and EXE matched the CI hashes. Seven core checks and the standalone GDI color, exclusion, live-update and focus checks passed.
+
+The full native input journey caught a different case: when our own fixture was already foreground, the managed wallpaper forms took focus during first-enable qualification. Color capture passed, but the focus gate rejected activation; the QA process exited with code 2 and released its own protection. That is a failed acceptance result, not a successful product test.
+
+The current candidate replaces those surfaces with raw, disabled, nonactivating Win32 popup windows. It passed compilation and seven CI core checks. Its final host input/password journey remains unverified. No normal Windows password profile has been configured or shipped in the public package. Physical-panel observation is separate from remote capture, which intentionally omits the wallpaper.
+
 ## Reproduce
 
 ```bash

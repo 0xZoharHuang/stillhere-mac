@@ -1,4 +1,4 @@
-name: macOS build
+name: Native builds
 on:
   push:
     branches: [main]

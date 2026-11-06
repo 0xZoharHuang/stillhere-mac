@@ -2,13 +2,18 @@
 
 **人可以离席，工作继续在场。**
 
-StillHere 是独立运行的原生 Mac 隐私壁纸工具。开启后，物理显示器显示自选图片，桌面会话继续运行；保护层不接收鼠标事件，也不取得键盘焦点。退出防窥需要应用密码。
+StillHere 是独立运行的隐私壁纸工具，包含 macOS 和 Windows 原生实现。开启后，物理显示器显示自选图片，桌面会话继续运行；保护层不接收鼠标事件，也不取得键盘焦点。退出防窥需要应用密码。
 
 它不依赖 UU 或其他远程连接。你可以离开电脑，让自动化继续工作，偶尔再通过远程工具连接并输入密码返回桌面。
 
 ![默认梗图：我司雇我在](Sources/StillHere/Resources/ExistentialCapybara.png)
 
-## 使用
+## 下载
+
+- [macOS 0.1.0：ZIP 与 DMG](https://github.com/0xZoharHuang/stillhere-mac/releases/tag/v0.1.0)，Apple Silicon + Intel 通用构建；实际运行验收为 macOS 15.5 / Apple Silicon。
+- [Windows 测试候选](https://github.com/0xZoharHuang/stillhere-mac/releases/tag/windows-v0.1.0-rc.6)，完整键鼠与密码验收仍在进行。Windows 的要求、构建与使用见 [windows/README.md](windows/README.md)。
+
+## macOS 使用
 
 1. 打开 `StillHere.app`。应用常驻菜单栏，名称为“在场”。
 2. 首次运行，设置一个至少 6 位的退出密码。应用不附带通用默认密码。

@@ -1,0 +1,68 @@
+{
+  "product": "StillHere",
+  "version": "0.1.0",
+  "status": "acceptance-in-progress",
+  "recordedAtUTC": "2026-11-06T04:47:55.825662+00:00",
+  "host": {
+    "os": "Windows 10 22H2",
+    "version": "10.0.19045.0",
+    "framework": ".NET Framework 4.8",
+    "frameworkRelease": 528372,
+    "displayCount": 1
+  },
+  "latestCandidate": {
+    "commit": "1e1a16563054f5aaee914fcfe101ef7f500a472a",
+    "release": "windows-v0.1.0-rc.6",
+    "nativeHostTested": false,
+    "ciRun": 42163903529,
+    "coreChecksPassed": 7,
+    "zip": {
+      "bytes": 3011466,
+      "sha256": "7899d8c8b548b87f96642e52d54734056bdb8b24cb5b2cbcf3f4ed02daeb869e"
+    },
+    "exeSHA256": "7c4710aefe06befb46020cffdb3abe42396c9105e06855abfea0dd22acbda037"
+  },
+  "lastHostTest": {
+    "commit": "e6b20e292350559678667385800d396a37b41004",
+    "zipAndExeHashesMatchedCI": true,
+    "coreChecksPassed": 7,
+    "coreExit": 0,
+    "standaloneCapture": {
+      "exit": 0,
+      "normal": "magenta",
+      "excluded": "green",
+      "liveUpdate": "cyan",
+      "affinityApplied": true,
+      "foregroundUnchanged": true,
+      "probeTookFocus": false,
+      "error": null
+    },
+    "nativeInput": {
+      "phase": "failed",
+      "step": "enabling",
+      "shortcutRegistered": true,
+      "lastCommand": "toggle",
+      "error": "capture probe took foreground focus while the same application fixture was active",
+      "captureColorsPassed": true,
+      "probeTookFocus": true,
+      "protectionReleasedOnFailure": true,
+      "exit": 2
+    }
+  },
+  "implementedSinceLastHostTest": [
+    "Raw Win32 wallpaper windows instead of Form",
+    "WS_DISABLED and WS_EX_NOACTIVATE at window creation"
+  ],
+  "unverified": [
+    "Latest raw-window candidate on the native host",
+    "Native keyboard and mouse input under the final protection layer",
+    "Wrong password, cancel and correct password exit on the final Windows candidate",
+    "Human observation of the physical panel",
+    "Other Windows builds and capture implementations"
+  ],
+  "privacy": {
+    "passwordsAndVerifiersIncluded": false,
+    "desktopScreenshotsIncluded": false,
+    "normalUserProfileModified": false
+  }
+}
