@@ -18,6 +18,10 @@ namespace StillHere.Windows {
         [DllImport("user32.dll", CharSet=CharSet.Unicode, SetLastError=true)] internal static extern IntPtr SendMessageTimeout(IntPtr window, uint message, IntPtr wparam, ref CopyDataValue value, uint flags, uint timeout, out IntPtr result);
         [DllImport("user32.dll")] internal static extern IntPtr GetDC(IntPtr window);
         [DllImport("user32.dll")] internal static extern int ReleaseDC(IntPtr window, IntPtr dc);
+        [DllImport("user32.dll")] internal static extern IntPtr BeginPaint(IntPtr window,out PaintValue paint);
+        [DllImport("user32.dll")] internal static extern bool EndPaint(IntPtr window,ref PaintValue paint);
+        [DllImport("user32.dll")] internal static extern bool InvalidateRect(IntPtr window,IntPtr rect,bool erase);
+        [DllImport("user32.dll")] internal static extern bool UpdateWindow(IntPtr window);
         [DllImport("gdi32.dll", SetLastError=true)] internal static extern bool BitBlt(IntPtr dest, int x, int y, int width, int height, IntPtr source, int sourceX, int sourceY, uint flags);
         [DllImport("kernel32.dll")] internal static extern uint SetThreadExecutionState(uint flags);
         [DllImport("kernel32.dll")] internal static extern bool AttachConsole(uint pid);
@@ -37,6 +41,13 @@ namespace StillHere.Windows {
             internal IntPtr Tag;
             internal int Length;
             internal IntPtr Data;
+        }
+        [StructLayout(LayoutKind.Sequential)] internal struct PaintValue {
+            internal IntPtr DC;
+            internal int Erase;
+            internal int Left,Top,Right,Bottom;
+            internal int Restore,Update;
+            [MarshalAs(UnmanagedType.ByValArray,SizeConst=32)] internal byte[] Reserved;
         }
         internal static bool SendCommand(string title, string command) {
             IntPtr window=FindWindow(null,title);

@@ -6,25 +6,29 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace StillHere.Windows {
-    internal sealed class PrivacySurface : Form {
-        private readonly bool excluded;
+    internal sealed class PrivacySurface : NativeWindow,IDisposable {
+        private Color color;
+        internal readonly Rectangle Bounds;
         internal Image Wallpaper;
         internal PrivacySurface(Rectangle bounds,Color color,Image image,bool exclude) {
-            excluded=exclude; Wallpaper=image; FormBorderStyle=FormBorderStyle.None;
-            StartPosition=FormStartPosition.Manual; Bounds=bounds; BackColor=color;
-            TopMost=true; ShowInTaskbar=false; AutoScaleMode=AutoScaleMode.None;
-            AccessibleRole=AccessibleRole.None; Text="StillHere Privacy Wallpaper";
-            SetStyle(ControlStyles.AllPaintingInWmPaint|ControlStyles.UserPaint|ControlStyles.OptimizedDoubleBuffer,true);
+            Bounds=bounds; this.color=color; Wallpaper=image;
+            try {
+                // A raw popup has no Form activation or active-control handling.
+                // WS_EX_NOACTIVATE is in place before the HWND is created.
+                CreateHandle(new CreateParams {
+                    Caption="StillHere Privacy Wallpaper",X=bounds.X,Y=bounds.Y,Width=bounds.Width,Height=bounds.Height,
+                    Style=unchecked((int)0x80000000),
+                    ExStyle=Native.NoActivate|Native.Transparent|Native.Layered|Native.ToolWindow|0x8
+                });
+                if(!Native.SetLayeredWindowAttributes(Handle,0,255,2)) throw new Win32Exception(Marshal.GetLastWin32Error());
+                if(exclude) SetExcluded();
+            } catch { Dispose(); throw; }
         }
-        protected override bool ShowWithoutActivation { get { return true; } }
-        protected override CreateParams CreateParams {
-            get { CreateParams p=base.CreateParams; p.ExStyle|=Native.NoActivate|Native.Transparent|Native.Layered|Native.ToolWindow; return p; }
-        }
-        protected override void OnHandleCreated(EventArgs e) {
-            base.OnHandleCreated(e);
-            if(!Native.SetLayeredWindowAttributes(Handle,0,255,2)) throw new Win32Exception(Marshal.GetLastWin32Error());
-            if(excluded) SetExcluded();
-        }
+        internal bool IsHandleCreated { get { return Handle!=IntPtr.Zero; } }
+        internal Color BackColor { get { return color; } set { color=value; Invalidate(); } }
+        internal void Invalidate() { if(IsHandleCreated) Native.InvalidateRect(Handle,IntPtr.Zero,false); }
+        internal void Update() { if(IsHandleCreated) Native.UpdateWindow(Handle); }
+        public void Dispose() { if(IsHandleCreated) DestroyHandle(); }
         internal void SetExcluded() {
             uint actual;
             if(!Native.SetWindowDisplayAffinity(Handle,Native.ExcludeFromCapture) ||
@@ -32,9 +36,6 @@ namespace StillHere.Windows {
                 throw new Win32Exception(Marshal.GetLastWin32Error(),"无法启用截图排除，未开启防窥。");
         }
         internal void Present() {
-            // Form.Show can explicitly activate a form when another form from
-            // this process is foreground. SWP_SHOWWINDOW | SWP_NOACTIVATE
-            // displays the native surface without that managed activation path.
             if(!Native.SetWindowPos(Handle,new IntPtr(-1),Bounds.X,Bounds.Y,Bounds.Width,Bounds.Height,0x10|0x40))
                 throw new Win32Exception(Marshal.GetLastWin32Error());
         }
@@ -42,19 +43,27 @@ namespace StillHere.Windows {
             if(m.Msg==0x21) { m.Result=new IntPtr(3); return; }
             if(m.Msg==0x84) { m.Result=new IntPtr(-1); return; }
             if(m.Msg==0x3D) { m.Result=IntPtr.Zero; return; }
+            if(m.Msg==0x14) { m.Result=new IntPtr(1); return; }
+            if(m.Msg==0x0F) {
+                Native.PaintValue paint;
+                IntPtr dc=Native.BeginPaint(Handle,out paint);
+                try { using(Graphics graphics=Graphics.FromHdc(dc)) Paint(graphics); }
+                finally { Native.EndPaint(Handle,ref paint); }
+                m.Result=IntPtr.Zero; return;
+            }
             base.WndProc(ref m);
         }
-        protected override void OnPaint(PaintEventArgs e) {
-            base.OnPaint(e);
+        private void Paint(Graphics graphics) {
+            graphics.Clear(color);
             if(Wallpaper==null) return;
-            double scale=Math.Min((double)ClientSize.Width/Wallpaper.Width,(double)ClientSize.Height/Wallpaper.Height);
+            double scale=Math.Min((double)Bounds.Width/Wallpaper.Width,(double)Bounds.Height/Wallpaper.Height);
             int width=(int)(Wallpaper.Width*scale),height=(int)(Wallpaper.Height*scale);
-            e.Graphics.DrawImage(Wallpaper,new Rectangle((ClientSize.Width-width)/2,(ClientSize.Height-height)/2,width,height));
+            graphics.DrawImage(Wallpaper,new Rectangle((Bounds.Width-width)/2,(Bounds.Height-height)/2,width,height));
             using(Font font=new Font(SystemFonts.MessageBoxFont.FontFamily,10f))
             using(Brush brush=new SolidBrush(Color.FromArgb(125,40,40,40))) {
                 string hint="Ctrl + Alt + Shift + P  输入密码返回桌面";
-                SizeF size=e.Graphics.MeasureString(hint,font);
-                e.Graphics.DrawString(hint,font,brush,(ClientSize.Width-size.Width)/2,ClientSize.Height-size.Height-12);
+                SizeF size=graphics.MeasureString(hint,font);
+                graphics.DrawString(hint,font,brush,(Bounds.Width-size.Width)/2,Bounds.Height-size.Height-12);
             }
         }
     }
