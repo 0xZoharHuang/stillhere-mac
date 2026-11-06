@@ -1,29 +1,81 @@
 {
   "product": "StillHere",
   "version": "0.1.0",
-  "status": "acceptance-in-progress",
-  "recordedAtUTC": "2026-11-06T04:54:15.022525+00:00",
+  "status": "native-desktop-passed-first-run-setup-pending",
+  "recordedAtUTC": "2026-11-06T06:33:20.4380582Z",
   "host": {
     "os": "Windows 10 22H2",
     "version": "10.0.19045.0",
     "framework": ".NET Framework 4.8",
     "frameworkRelease": 528372,
-    "displayCount": 1
+    "displayCount": 1,
+    "processSession": 7
   },
-  "latestCandidate": {
+  "releaseBuild": {
     "commit": "491cd8f971769a451818a66a98fcdac4849b1e7e",
     "release": "windows-v0.1.0",
-    "nativeHostTested": false,
-    "desktopWorkflowRun": 42164978290,
-    "desktopVerifiedOS": "10.0.20348.0",
-    "coreChecksPassed": 7,
-    "zip": {
-      "bytes": 3011495,
-      "sha256": "cb69a39b39a06021cb1b10c4278b5b8656979f0ee07eac14f277d4da86b9fc30"
-    },
-    "exeSHA256": "cb251649e5bbba86025b418068eced43f92e1ac64513ea84ee4352cd60238076"
+    "zipBytes": 3011495,
+    "zipSHA256": "cb69a39b39a06021cb1b10c4278b5b8656979f0ee07eac14f277d4da86b9fc30",
+    "exeSHA256": "cb251649e5bbba86025b418068eced43f92e1ac64513ea84ee4352cd60238076",
+    "downloadedZIPAndEXEMatchedPublishedRelease": true
   },
-  "lastHostTest": {
+  "evidenceSource": "Application JSON and Format-List output observed through the authorized UU terminal; sanitized transcription, no desktop images stored in Git.",
+  "nativeAcceptanceCompletedAtUTC": "2026-11-06T06:07:21.980705Z",
+  "standaloneCapture": {
+    "exit": 0,
+    "AffinityApplied": true,
+    "Error": null,
+    "Excluded": "green",
+    "ForegroundUnchanged": false,
+    "LiveUpdate": "cyan",
+    "Normal": "magenta",
+    "OS": "10.0.19045.0",
+    "ProbeTookFocus": false
+  },
+  "nativeInput": {
+    "exit": 0,
+    "CancelKeptProtection": true,
+    "CaptureQualification": {
+      "AffinityApplied": true,
+      "Error": null,
+      "Excluded": "green",
+      "ForegroundUnchanged": true,
+      "LiveUpdate": "cyan",
+      "Normal": "magenta",
+      "OS": "10.0.19045.0",
+      "ProbeTookFocus": false
+    },
+    "CorrectPasswordExited": true,
+    "Error": null,
+    "Phase": "passed",
+    "ProtectionReleased": true,
+    "QuitAcknowledged": true,
+    "ShortcutEnabled": true,
+    "ShortcutRegistered": true,
+    "Source": "guarded Windows SendInput on the application's own temporary QA fixture",
+    "TypedAndClickedWhileProtected": true,
+    "WrongPasswordRejected": true
+  },
+  "installation": {
+    "directory": "%LOCALAPPDATA%\\Programs\\StillHere",
+    "installedExeMatchesTestedRelease": true,
+    "desktopShortcut": true,
+    "running": true,
+    "protected": false,
+    "shortcutRegistered": true,
+    "screens": 1,
+    "passwordConfigured": false,
+    "firstRunSetup": "awaiting user entry in the settings window",
+    "observedAtUTC": "2026-11-06T06:33:20.4380582Z"
+  },
+  "environmentInterference": {
+    "observed": "Six instances of the third-party ScreenSaverPlayer in the same interactive session were covering the desktop.",
+    "blockedAttempt": "With that cover active, capture controls returned unexpected colors; the application refused protection and the QA process exited with code 2, releasing its own surfaces.",
+    "resolution": "Ended only the six observed screen-saver processes in the matching session and reran the unchanged release executable.",
+    "systemAccountOrLockPolicyChanged": false,
+    "standaloneForegroundNote": "The foreground changed during the standalone check following screen-saver termination; neither probe window became foreground. The subsequent full UI check kept the fixture foreground."
+  },
+  "previousBuildFailure": {
     "commit": "e6b20e292350559678667385800d396a37b41004",
     "zipAndExeHashesMatchedCI": true,
     "coreChecksPassed": 7,
@@ -50,21 +102,16 @@
       "exit": 2
     }
   },
-  "implementedSinceLastHostTest": [
-    "Raw Win32 wallpaper windows instead of Form",
-    "WS_DISABLED and WS_EX_NOACTIVATE at window creation"
-  ],
+  "crossEnvironmentAcceptance": "application-windows-server2022.json",
   "unverified": [
-    "Latest raw-window candidate on the native host",
-    "Native keyboard and mouse input under the final protection layer",
-    "Wrong password, cancel and correct password exit on the final Windows candidate",
-    "Human observation of the physical panel",
+    "User first-run password setup",
+    "Independent UU video and remote input journey under the final protection layer",
+    "Human physical-panel observation",
     "Other Windows builds and capture implementations"
   ],
   "privacy": {
     "passwordsAndVerifiersIncluded": false,
     "desktopScreenshotsIncluded": false,
-    "normalUserProfileModified": false
-  },
-  "crossEnvironmentAcceptance": "application-windows-server2022.json"
+    "normalUserPasswordWrittenByAgent": false
+  }
 }

@@ -2,9 +2,9 @@
 
 Windows 原生托盘版本，使用系统自带的 .NET Framework 4.8，无需安装新的 .NET SDK。最低系统为 Windows 10 2004 / build 19041。
 
-当前为 [0.1.0 Beta](https://github.com/0xZoharHuang/stillhere-mac/releases/tag/windows-v0.1.0)。已在 GitHub 的 Windows Server 2022 / build 20348 交互桌面上通过完整原生验收：采集排除与更新、不抢焦点、快捷键、保护下打字和点击、错误密码、取消、正确密码退出。发布包包含该流程实际测试过的同一份 EXE。
+当前为 [0.1.0 Beta](https://github.com/0xZoharHuang/stillhere-mac/releases/tag/windows-v0.1.0)。已在 Windows 10 / build 19045 实机和 GitHub 的 Windows Server 2022 / build 20348 交互桌面上通过完整原生验收：采集排除与更新、不抢焦点、快捷键、保护下打字和点击、错误密码、取消、正确密码退出。两个环境均使用发布包中的同一份 EXE，并核对了文件 SHA-256。
 
-记录见 [application-windows-server2022.json](../verification/application-windows-server2022.json)。指定 Windows 10 / build 19045 电脑的最终版本复测和实体显示器观察仍待完成，见 [application-windows10.json](../verification/application-windows10.json)。
+记录见 [application-windows10.json](../verification/application-windows10.json) 和 [application-windows-server2022.json](../verification/application-windows-server2022.json)。实体显示器观察与最终版本的独立 UU 视频、远程输入流程仍待确认。
 
 ## 构建
 
@@ -33,6 +33,8 @@ StillHere.exe --status --output runtime-check.json
 ```
 
 `--core-self-test` 不操作桌面；`--diagnose` 在屏幕角落显示短时测试色块，用带 CAPTUREBLT 的 GDI 采集普通遮挡、排除遮挡和下层颜色变化。只有阳性对照、排除和实时更新都符合预期才通过。
+
+检查需要正常的登录桌面。第三方屏保覆盖测试色块时，应用会拒绝开启保护；应先正常退出该屏保再检查。应用不会自动结束其他程序或更改系统锁屏设置。
 
 `--qa` 为原生自动化验收创建临时独立配置与随机退出密码，并打开测试窗口；信息保存在当前用户的 `StillHere\qa-session.json`。它不修改正常配置，退出后清理自己的临时配置。该入口仅用于开发验证。
 

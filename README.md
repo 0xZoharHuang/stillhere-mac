@@ -11,7 +11,7 @@ StillHere 是独立运行的隐私壁纸工具，包含 macOS 和 Windows 原生
 ## 下载
 
 - [macOS 0.1.0：ZIP 与 DMG](https://github.com/0xZoharHuang/stillhere-mac/releases/tag/v0.1.0)，Apple Silicon + Intel 通用构建；实际运行验收为 macOS 15.5 / Apple Silicon。
-- [Windows 0.1.0 Beta：单文件 EXE 压缩包](https://github.com/0xZoharHuang/stillhere-mac/releases/tag/windows-v0.1.0)，已通过 Windows Server 2022 的完整原生桌面验收；指定 Windows 10 电脑的最终复测仍待完成。Windows 的要求、构建与使用见 [windows/README.md](windows/README.md)。
+- [Windows 0.1.0 Beta：单文件 EXE 压缩包](https://github.com/0xZoharHuang/stillhere-mac/releases/tag/windows-v0.1.0)，已通过 Windows 10 / build 19045 与 Windows Server 2022 的完整原生桌面验收。Windows 的要求、构建与使用见 [windows/README.md](windows/README.md)。
 
 ## macOS 使用
 
