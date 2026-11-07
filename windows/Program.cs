@@ -11,7 +11,6 @@ using System.Windows.Forms;
 namespace StillHere.Windows {
     [DataContract] internal sealed class QAInfo {
         [DataMember] public string DataDirectory;
-        [DataMember] public string Password;
     }
     internal static class Program {
         internal static string Value(string[] args,string key) {
@@ -30,27 +29,21 @@ namespace StillHere.Windows {
             try {
                 if(args.Length>0 && !args.Contains("--qa") && !args.Contains("--qa-run-ui") && !args.Contains("--fixture")) Native.AttachConsole(0xFFFFFFFF);
                 if(args.Contains("--core-self-test")) return CoreTests.Run(output);
-                if(args.Contains("--version")) { Console.WriteLine("0.1.0"); return 0; }
+                if(args.Contains("--version")) { Console.WriteLine("0.2.0"); return 0; }
                 try { Native.SetProcessDpiAwarenessContext(new IntPtr(-4)); } catch(EntryPointNotFoundException) { }
                 Application.EnableVisualStyles(); Application.SetCompatibleTextRenderingDefault(false);
                 string root=Environment.GetEnvironmentVariable("STILLHERE_DATA_DIR")??Store.DefaultRoot;
                 bool qa=args.Contains("--qa") || args.Contains("--qa-run-ui");
-                string qaPassword=null;
                 if(qa) {
                     root=Path.Combine(Path.GetTempPath(),"StillHere-QA-"+Guid.NewGuid().ToString("N"));
-                    byte[] bytes=new byte[8]; using(RandomNumberGenerator rng=RandomNumberGenerator.Create()) rng.GetBytes(bytes);
-                    string password=BitConverter.ToString(bytes).Replace("-","");
-                    qaPassword=password;
-                    Store test=new Store(root); test.Save("credential.json",Credential.Create(password));
-                    new Store(Store.DefaultRoot).Save("qa-session.json",new QAInfo { DataDirectory=root,Password=password });
+                    new Store(Store.DefaultRoot).Save("qa-session.json",new QAInfo { DataDirectory=root });
                 }
                 Store store=new Store(root);
                 if(args.Contains("--diagnose")) {
                     CaptureResult result=CaptureProbe.Run(); store.Save("compatibility.json",result); Output(result,output); return result.Passed?0:2;
                 }
                 if(args.Contains("--init-password-stdin")) {
-                    if(store.LoadCredential()!=null) throw new InvalidOperationException("退出密码已设置，请在应用设置中修改。");
-                    store.Save("credential.json",Credential.Create(Console.In.ReadToEnd().TrimEnd('\r','\n'))); return 0;
+                    Console.Error.WriteLine("This version does not use an exit password. Existing data was not changed."); return 2;
                 }
                 if(args.Contains("--status")) {
                     RuntimeState state=store.Read<RuntimeState>("runtime.json")??new RuntimeState { Running=false };
@@ -66,7 +59,7 @@ namespace StillHere.Windows {
                     if(action!=null && action!="fixture") { mutex.ReleaseMutex(); return 3; }
                     string qaOutput=args.Contains("--qa-run-ui")?(output??Path.Combine(Store.DefaultRoot,"qa-last-result.json")):null;
                     try {
-                        TrayContext context=new TrayContext(store,qa || action=="fixture",qaPassword,qaOutput);
+                        TrayContext context=new TrayContext(store,qa || action=="fixture",qaOutput);
                         Application.Run(context);
                         if(qaOutput!=null && !context.InputAcceptancePassed) return 2;
                     }

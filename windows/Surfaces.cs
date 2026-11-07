@@ -59,12 +59,6 @@ namespace StillHere.Windows {
             double scale=Math.Min((double)Bounds.Width/Wallpaper.Width,(double)Bounds.Height/Wallpaper.Height);
             int width=(int)(Wallpaper.Width*scale),height=(int)(Wallpaper.Height*scale);
             graphics.DrawImage(Wallpaper,new Rectangle((Bounds.Width-width)/2,(Bounds.Height-height)/2,width,height));
-            using(Font font=new Font(SystemFonts.MessageBoxFont.FontFamily,10f))
-            using(Brush brush=new SolidBrush(Color.FromArgb(125,40,40,40))) {
-                string hint="Ctrl + Alt + Shift + P  输入密码返回桌面";
-                SizeF size=graphics.MeasureString(hint,font);
-                graphics.DrawString(hint,font,brush,(Bounds.Width-size.Width)/2,Bounds.Height-size.Height-12);
-            }
         }
     }
     internal static class CaptureProbe {

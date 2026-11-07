@@ -3,7 +3,7 @@ import Carbon
 import StillHereCore
 import UniformTypeIdentifiers
 
-let appVersion = "0.2.0"
+let appVersion = "0.3.0"
 let commandNotification = Notification.Name("dev.0xzohar.stillhere.command")
 
 @MainActor
@@ -11,23 +11,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     let storage: AppStorage
     private let overlay = OverlayController()
     private var preferences: Preferences
-    private var credential: PasswordCredential?
-    private var credentialError: String?
     private var statusItem: NSStatusItem!
     private var enterItem: NSMenuItem!
     private var settingsItem: NSMenuItem!
     private var statusLabel: NSMenuItem!
     private var preferencesWindow: PreferencesWindow?
-    private var authPanel: AuthenticationPanel?
     private var fixture: AutomationFixture?
-    private var throttle = AuthenticationThrottle()
     private var hotKey: EventHotKeyRef?
     private var eventHandler: EventHandlerRef?
     private var localShortcutMonitor: Any?
     private var lastShortcutTime = Date.distantPast
     private var shortcutPressCount = 0
     private var commandObserver: NSObjectProtocol?
-    private var allowTermination = false
     private var initiallyShowFixture: Bool
     private var displayUpdate: DispatchWorkItem?
     private var diagnostic: Process?
@@ -37,8 +32,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         preferences = storage.loadPreferences()
         initiallyShowFixture = fixture
         super.init()
-        do { credential = try storage.loadCredential() }
-        catch { credentialError = error.localizedDescription }
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -58,15 +51,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                 DispatchQueue.main.async { self?.handleCommand(action) }
             }
         updateState()
-        if let credentialError { alert("密码配置异常", credentialError) }
-        else if credential == nil { showPreferences() }
-        if initiallyShowFixture { showFixture() }
+        if initiallyShowFixture { showFixture() } else { showPreferences() }
     }
 
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
-        if allowTermination || !overlay.isActive { return .terminateNow }
-        requestUnlock(quit: true)
-        return .terminateCancel
+        return .terminateNow
     }
 
     func applicationWillTerminate(_ notification: Notification) {
@@ -89,7 +78,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         enterItem.keyEquivalent = "p"
         enterItem.keyEquivalentModifierMask = [.control, .option, .command]
         menu.addItem(enterItem)
-        settingsItem = item("壁纸与退出密码…", #selector(settingsClicked))
+        settingsItem = item("壁纸与设置…", #selector(settingsClicked))
         menu.addItem(settingsItem)
         menu.addItem(.separator())
         menu.addItem(item("检查采集兼容性…", #selector(runDiagnostics)))
@@ -112,9 +101,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let active = overlay.isActive
         statusItem.button?.image = NSImage(systemSymbolName: active ? "eye.slash.fill" : "eye", accessibilityDescription: "在场防窥")
         statusItem.button?.title = active ? " 在场 · 防窥中" : " 在场"
-        statusItem.button?.toolTip = active ? "隐私壁纸已开启，自动化继续工作。⌃⌥⌘P 输入密码退出。" : "⌃⌥⌘P 开启隐私壁纸"
+        statusItem.button?.toolTip = active ? "隐私壁纸已开启。⌃⌥⌘P 返回桌面。" : "⌃⌥⌘P 开启隐私壁纸"
         statusLabel.title = active ? "在场 · \(overlay.windows.count) 块屏幕受保护" : "在场 · 桌面正常显示"
-        enterItem.title = active ? "输入密码，解除防窥…" : "开启隐私壁纸"
+        enterItem.title = active ? "解除防窥" : "开启隐私壁纸"
         settingsItem.isEnabled = !active
         publishStatus()
     }
@@ -128,18 +117,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     @objc private func toggleProtection() {
-        if overlay.isActive { requestUnlock() } else { shield() }
+        if overlay.isActive { overlay.hide() } else { shield() }
     }
 
     private func shield() {
         do {
             guard hotKey != nil, eventHandler != nil else {
-                alert("退出快捷键不可用", "⌃⌥⌘P 可能被其他应用占用。为保证能随时请求密码退出，本次没有开启防窥。")
+                alert("退出快捷键不可用", "⌃⌥⌘P 可能被其他应用占用。为保证能随时返回桌面，本次没有开启防窥。")
                 return
             }
-            guard let value = try storage.loadCredential() else { showPreferences(); return }
-            try value.validate()
-            credential = value
             guard !overlay.isActive else { return }
             guard hasCurrentCompatibility else {
                 startDiagnostics(activateAfter: true)
@@ -148,40 +134,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             preferencesWindow?.close()
             try overlay.show(image: wallpaper(), keepAwake: preferences.keepAwake)
         } catch { alert("无法开启防窥", error.localizedDescription) }
-    }
-
-    private func requestUnlock(quit: Bool = false) {
-        guard overlay.isActive else {
-            if quit { NSApp.terminate(nil) }
-            return
-        }
-        if authPanel != nil { authPanel?.present(); return }
-        let panel = AuthenticationPanel(quit: quit)
-        panel.verify = { [weak self] password in
-            guard let self else { return "应用暂不可用，请重试。" }
-            let delay = self.throttle.remaining()
-            if delay > 0 { return "尝试次数较多，请 \(Int(ceil(delay))) 秒后再试。" }
-            do {
-                guard let credential = try self.storage.loadCredential() else { return "退出密码配置丢失。" }
-                guard try credential.matches(password) else {
-                    self.throttle.failed()
-                    self.publishStatus()
-                    return "密码不正确，屏幕仍受保护。"
-                }
-                self.throttle.succeeded()
-                return nil
-            } catch { return error.localizedDescription }
-        }
-        panel.didAuthenticate = { [weak self] in
-            guard let self else { return }
-            self.authPanel = nil
-            self.overlay.hide()
-            if quit { self.allowTermination = true; NSApp.terminate(nil) }
-        }
-        panel.didCancel = { [weak self] in self?.authPanel = nil; self?.publishStatus() }
-        authPanel = panel
-        publishStatus()
-        panel.present()
     }
 
     @objc private func settingsClicked() { if !overlay.isActive { showPreferences() } }
@@ -214,24 +166,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                 self.preferences.keepAwake = value
                 self.savePreferences()
             }
-            controller.savePassword = { [weak self] current, password, confirmation in
-                guard let self else { return "应用暂不可用。" }
-                guard password == confirmation else { return "两次输入的新密码不一致。" }
-                do {
-                    if let existing = try self.storage.loadCredential(), !(try existing.matches(current)) {
-                        return "当前密码不正确。"
-                    }
-                    let value = try PasswordCredential(password: password)
-                    try self.storage.saveCredential(value)
-                    self.credential = value
-                    self.updateState()
-                    return nil
-                } catch { return error.localizedDescription }
-            }
             preferencesWindow = controller
         }
         let selectedID = preferences.wallpaperFilename == nil ? (preferences.builtInWallpaperID ?? "capybara") : nil
-        preferencesWindow?.present(image: wallpaper(), keepAwake: preferences.keepAwake, configured: credential != nil, selectedID: selectedID)
+        preferencesWindow?.present(image: wallpaper(), keepAwake: preferences.keepAwake, selectedID: selectedID)
     }
 
     private func chooseWallpaper() {
@@ -317,7 +255,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private func handleCommand(_ action: String) {
         switch action {
         case "shield": shield()
-        case "unlock": requestUnlock()
+        case "unlock": if overlay.isActive { overlay.hide() }
         case "settings": settingsClicked()
         case "quit": quitClicked()
         case "fixture": showFixture()
@@ -335,12 +273,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     @objc private func quitClicked() {
-        if overlay.isActive { requestUnlock(quit: true) } else { NSApp.terminate(nil) }
+        NSApp.terminate(nil)
     }
 
     @objc private func about() {
         alert("在场 · StillHere \(appVersion)",
-              "人可以离席，工作继续在场。\n\n默认快捷键：⌃⌥⌘P\n防窥层对键鼠透明，解除防窥需要应用密码。\n\n本工具用于遮挡物理显示器。采集排除的效果取决于 macOS 版本和读屏方式，首次使用及系统升级后请验证你的实际自动化。")
+              "人可以离席，工作继续在场。\n\n默认快捷键：⌃⌥⌘P\n防窥层对键鼠透明，再按一次快捷键即可返回桌面。\n\n本工具用于遮挡物理显示器。采集排除的效果取决于 macOS 版本和读屏方式，首次使用及系统升级后请验证你的实际自动化。")
     }
 
     @objc private func runDiagnostics() { startDiagnostics(activateAfter: false) }
@@ -405,8 +343,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let state: [String: Any] = [
             "version": appVersion, "running": running, "pid": ProcessInfo.processInfo.processIdentifier,
             "protected": overlay.isActive, "screenCount": NSScreen.screens.count,
-            "windows": overlay.windowInfo, "passwordConfigured": credential != nil,
-            "authenticationDialogOpen": authPanel != nil, "failedAuthenticationAttempts": throttle.failures,
+            "windows": overlay.windowInfo, "passwordRequired": false,
             "captureCompatibilityVerified": hasCurrentCompatibility,
             "shortcutRegistered": hotKey != nil && eventHandler != nil,
             "shortcutPressCount": shortcutPressCount,

@@ -27,13 +27,12 @@ enum StillHereMain {
             StillHere \(appVersion) — independent Mac privacy wallpaper
             --status                    Print current application status
             --shield                    Ask the running app to enable privacy
-            --unlock                    Show the password dialog; never bypass authentication
+            --unlock                    Remove the privacy wallpaper
             --settings                  Show settings while privacy is off
-            --quit                      Request quit; password required while protected
+            --quit                      Quit and remove the privacy wallpaper
             --fixture                   Show the explicit automation test window
             --close-fixture             Close that test window
             --diagnose                  Qualify capture from this terminal's existing permission context
-            --init-password-stdin       Initialize a new profile from standard input
             STILLHERE_DATA_DIR          Optional isolated profile directory for tests
             """)
             return
@@ -41,14 +40,8 @@ enum StillHereMain {
         if args.contains("--status") { printJSON(runtimeState(storage) ?? ["running": false, "protected": false]); return }
         if args.contains("--diagnose") { exit(runCommandLineDiagnostics(storage: storage)) }
         if args.contains("--init-password-stdin") {
-            do {
-                let input = FileHandle.standardInput.readDataToEndOfFile()
-                let password = String(decoding: input, as: UTF8.self).trimmingCharacters(in: .newlines)
-                let credential = try PasswordCredential(password: password)
-                try storage.saveCredential(credential, initialOnly: true)
-                printJSON(["configured": true])
-            } catch { printJSON(["error": error.localizedDescription]); exit(1) }
-            return
+            printJSON(["error": "This version does not use an exit password. Existing data was not changed."])
+            exit(2)
         }
         let commands = ["--shield": "shield", "--unlock": "unlock", "--settings": "settings",
                         "--quit": "quit", "--fixture": "fixture", "--close-fixture": "close-fixture", "--diagnose": "diagnose"]

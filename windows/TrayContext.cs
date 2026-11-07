@@ -9,13 +9,14 @@ using Microsoft.Win32;
 
 namespace StillHere.Windows {
     [DataContract] internal sealed class RuntimeState {
-        [DataMember] public string Version="0.1.0";
+        [DataMember] public string Version="0.2.0";
         [DataMember] public int PID=System.Diagnostics.Process.GetCurrentProcess().Id;
         [DataMember] public bool Running=true;
         [DataMember] public bool Protected;
         [DataMember] public int PrivacyWindows;
         [DataMember] public int Screens;
         [DataMember] public bool AuthenticationOpen;
+        [DataMember] public bool PasswordRequired=false;
         [DataMember] public bool CaptureQualified;
         [DataMember] public bool ShortcutRegistered;
         [DataMember] public string LastCommand;
@@ -56,15 +57,13 @@ namespace StillHere.Windows {
         private Preferences preferences;
         private readonly List<PrivacySurface> surfaces=new List<PrivacySurface>();
         private Image image;
-        private bool authenticationOpen,probing,quitting;
+        private bool probing,quitting;
         private string lastCommand;
         private int shortcutPressCount;
-        private int failedAttempts;
-        private DateTime retryAfter=DateTime.MinValue;
         private AutomationFixture fixture;
         private ToolStripMenuItem status,toggle,settings;
         private bool Active { get { return surfaces.Count>0; } }
-        internal TrayContext(Store storage,bool showFixture,string qaPassword=null,string qaOutput=null) {
+        internal TrayContext(Store storage,bool showFixture,string qaOutput=null) {
             store=storage;
             try { preferences=store.Read<Preferences>("preferences.json")??new Preferences(); } catch { preferences=new Preferences(); }
             image=LoadImage();
@@ -73,7 +72,7 @@ namespace StillHere.Windows {
             ContextMenuStrip menu=new ContextMenuStrip();
             status=new ToolStripMenuItem("在场 · 正常显示") { Enabled=false };
             toggle=new ToolStripMenuItem("开启隐私壁纸",null,delegate { Toggle(); });
-            settings=new ToolStripMenuItem("壁纸与退出密码…",null,delegate { Settings(); });
+            settings=new ToolStripMenuItem("壁纸与设置…",null,delegate { Settings(); });
             menu.Items.Add(status); menu.Items.Add(new ToolStripSeparator()); menu.Items.Add(toggle); menu.Items.Add(settings);
             menu.Items.Add(new ToolStripMenuItem("检查采集兼容性",null,delegate { Diagnose(false); }));
             menu.Items.Add(new ToolStripSeparator());
@@ -86,8 +85,8 @@ namespace StillHere.Windows {
             startup.Tick+=delegate {
                 startup.Stop(); startup.Dispose();
                 if(showFixture) ShowFixture();
-                else { try { if(store.LoadCredential()==null) Settings(); } catch(Exception e) { Error(e.Message); } }
-                if(qaOutput!=null) StartInputAcceptance(qaPassword,qaOutput);
+                else Settings();
+                if(qaOutput!=null) StartInputAcceptance(qaOutput);
             };
             startup.Start();
         }
@@ -108,17 +107,16 @@ namespace StillHere.Windows {
             switch(command) {
                 case "toggle": Toggle(); break;
                 case "shield": Enable(); break;
-                case "unlock": if(Active) Authenticate(false); break;
+                case "unlock": if(Active) HidePrivacy(); break;
                 case "quit": Quit(); break;
                 case "settings": if(!Active) Settings(); break;
                 case "fixture": ShowFixture(); break;
             }
         }
-        private void Toggle() { if(Active) Authenticate(false); else Enable(); }
+        private void Toggle() { if(Active) HidePrivacy(); else Enable(); }
         private void Enable() {
             if(Active || probing) return;
             try {
-                if(store.LoadCredential()==null) { Settings(); return; }
                 if(!commands.ShortcutRegistered) { Error("退出快捷键注册失败，未开启防窥。"); return; }
                 if(!store.Qualified()) { Diagnose(true); return; }
                 Rebuild();
@@ -156,41 +154,14 @@ namespace StillHere.Windows {
             finally { probing=false; Publish(true); }
         }
         private void EnableAfterProbe() { Rebuild(); }
-        private void Authenticate(bool quit) {
-            if(authenticationOpen) return;
-            authenticationOpen=true; Publish(true);
-            try {
-                using(PasswordDialog dialog=new PasswordDialog(quit,delegate(string password) {
-                    if(DateTime.UtcNow<retryAfter) return "尝试次数较多，请稍后重试。";
-                    try {
-                        Credential value=store.LoadCredential();
-                        if(value==null || !value.Matches(password)) {
-                            failedAttempts++;
-                            if(failedAttempts>=3) retryAfter=DateTime.UtcNow.AddSeconds(Math.Min(30,Math.Pow(2,Math.Min(5,failedAttempts-3))));
-                            return "密码不正确，屏幕仍受保护。";
-                        }
-                        failedAttempts=0; retryAfter=DateTime.MinValue; return null;
-                    } catch(Exception e) { return e.Message; }
-                })) {
-                    if(dialog.ShowDialog()==DialogResult.OK) { HidePrivacy(); if(quit) { if(inputAcceptance!=null) inputAcceptance.CorrectPasswordExited=true; ExitThread(); } }
-                }
-            } finally { authenticationOpen=false; if(!quitting) Publish(true); }
-        }
-        private void Quit() { if(Active) Authenticate(true); else ExitThread(); }
+        private void Quit() { if(inputAcceptance!=null) inputAcceptance.QuitExited=true; ExitThread(); }
         private void Settings() {
-            if(Active || authenticationOpen) return;
+            if(Active) return;
             try {
                 bool again;
                 do {
-                    using(SettingsDialog dialog=new SettingsDialog(image,store.LoadCredential()!=null,preferences,
-                        delegate(string current,string next,string confirmation) {
-                            if(next!=confirmation) return "两次新密码不一致。";
-                            try {
-                                Credential old=store.LoadCredential();
-                                if(old!=null && !old.Matches(current)) return "当前密码不正确。";
-                                store.Save("credential.json",Credential.Create(next)); return null;
-                            } catch(Exception e) { return e.Message; }
-                        },ChooseImage,delegate(bool awake) { preferences.KeepAwake=awake; store.Save("preferences.json",preferences); })) {
+                    using(SettingsDialog dialog=new SettingsDialog(image,preferences,
+                        ChooseImage,delegate(bool awake) { preferences.KeepAwake=awake; store.Save("preferences.json",preferences); })) {
                         again=dialog.ShowDialog()==DialogResult.Retry;
                     }
                 } while(again);
@@ -217,10 +188,10 @@ namespace StillHere.Windows {
         }
         private void Publish(bool running) {
             string text=Active?"在场 · 防窥中（"+surfaces.Count+" 屏）":"在场 · 正常显示";
-            if(status!=null) { status.Text=text; toggle.Text=Active?"输入密码，解除防窥…":"开启隐私壁纸"; settings.Enabled=!Active; }
+            if(status!=null) { status.Text=text; toggle.Text=Active?"解除防窥":"开启隐私壁纸"; settings.Enabled=!Active; }
             if(tray!=null) tray.Text=text;
             try { store.Save("runtime.json",new RuntimeState { Running=running,Protected=Active,PrivacyWindows=surfaces.Count,Screens=Screen.AllScreens.Length,
-                AuthenticationOpen=authenticationOpen,CaptureQualified=store.Qualified(),ShortcutRegistered=commands.ShortcutRegistered,
+                AuthenticationOpen=false,CaptureQualified=store.Qualified(),ShortcutRegistered=commands.ShortcutRegistered,
                 LastCommand=lastCommand,ShortcutPressCount=shortcutPressCount,UpdatedAt=DateTime.UtcNow.ToString("o") }); }
             catch(Exception e) { System.Diagnostics.Debug.WriteLine(e.Message); }
         }

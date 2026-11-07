@@ -15,10 +15,10 @@ namespace StillHere.Windows {
         [DataMember] public bool ShortcutEnabled;
         [DataMember] public bool ShortcutRegistered;
         [DataMember] public bool TypedAndClickedWhileProtected;
-        [DataMember] public bool WrongPasswordRejected;
-        [DataMember] public bool CancelKeptProtection;
+        [DataMember] public bool ShortcutDisabled;
+        [DataMember] public bool ShortcutReenabled;
         [DataMember] public bool QuitAcknowledged;
-        [DataMember] public bool CorrectPasswordExited;
+        [DataMember] public bool QuitExited;
         [DataMember] public bool ProtectionReleased;
         [DataMember] public CaptureResult CaptureQualification;
         [DataMember] public string Error;
@@ -74,12 +74,7 @@ namespace StillHere.Windows {
                 new Native.Input { Type=0,Data=new Native.InputData { Mouse=new Native.MouseInput { Flags=4 } } }
             });
         }
-        private void RequireOwnPasswordDialog() {
-            Control form=Control.FromHandle(Native.GetForegroundWindow());
-            if(!(form is PasswordDialog)) throw new InvalidOperationException("The password dialog is not the foreground window; input was not sent.");
-        }
-        private async void StartInputAcceptance(string password,string output) {
-            if(String.IsNullOrEmpty(password)) return;
+        private async void StartInputAcceptance(string output) {
             inputAcceptance=new InputAcceptance(); inputAcceptanceOutput=output;
             inputWatchdog=new Timer { Interval=55000 };
             inputWatchdog.Tick+=delegate { inputAcceptance.Error="QA watchdog timeout"; HidePrivacy(); ExitThread(); };
@@ -102,18 +97,15 @@ namespace StillHere.Windows {
                 // fixture while the physical display remains covered.
                 await Task.Delay(15000);
                 if(Native.GetForegroundWindow()!=fixture.Handle) throw new Exception("QA lost foreground ownership before unlock test.");
-                inputAcceptance.Phase="wrong-password"; SaveInputAcceptance(); Shortcut();
-                await WaitFor(delegate { return authenticationOpen; },3000); await Task.Delay(300); RequireOwnPasswordDialog();
-                TypeUnicode("controlled-wrong-password"); Press(0x0D); await Task.Delay(500);
-                if(failedAttempts!=1 || !Active || !authenticationOpen) throw new Exception("Wrong password did not leave protection active.");
-                inputAcceptance.WrongPasswordRejected=true;
-                RequireOwnPasswordDialog(); Press(0x1B); await WaitFor(delegate { return !authenticationOpen; },3000);
-                if(!Active) throw new Exception("Cancel removed privacy.");
-                inputAcceptance.CancelKeptProtection=true; inputAcceptance.Phase="quit-password"; SaveInputAcceptance();
+                inputAcceptance.Phase="disabling"; SaveInputAcceptance(); Shortcut();
+                await WaitFor(delegate { return !Active; },3000);
+                inputAcceptance.ShortcutDisabled=true;
+                if(Native.GetForegroundWindow()!=fixture.Handle) throw new Exception("QA lost foreground ownership before re-enabling.");
+                inputAcceptance.Phase="reenabling"; SaveInputAcceptance(); Shortcut();
+                await WaitFor(delegate { return Active; },3000);
+                inputAcceptance.ShortcutReenabled=true; inputAcceptance.Phase="quit"; SaveInputAcceptance();
                 inputAcceptance.QuitAcknowledged=Native.SendCommand("StillHere.Command."+store.Scope,"quit");
                 if(!inputAcceptance.QuitAcknowledged) throw new Exception("Quit request was not acknowledged.");
-                await WaitFor(delegate { return authenticationOpen; },3000); await Task.Delay(300); RequireOwnPasswordDialog();
-                TypeUnicode(password); Press(0x0D);
             } catch(Exception e) {
                 inputAcceptance.Error=e.Message+" LastCommand="+(lastCommand??"none")+" CaptureQualified="+store.Qualified()+" Probing="+probing;
                 inputAcceptance.Phase="failed"; SaveInputAcceptance(); HidePrivacy(); ExitThread();
@@ -123,7 +115,9 @@ namespace StillHere.Windows {
             if(inputAcceptance==null) return;
             if(inputWatchdog!=null) { inputWatchdog.Stop(); inputWatchdog.Dispose(); }
             inputAcceptance.ProtectionReleased=!Active;
-            if(inputAcceptance.CorrectPasswordExited && inputAcceptance.Error==null) inputAcceptance.Phase="passed";
+            if(inputAcceptance.ShortcutEnabled && inputAcceptance.TypedAndClickedWhileProtected && inputAcceptance.ShortcutDisabled &&
+               inputAcceptance.ShortcutReenabled && inputAcceptance.QuitAcknowledged && inputAcceptance.QuitExited &&
+               inputAcceptance.ProtectionReleased && inputAcceptance.Error==null) inputAcceptance.Phase="passed";
             SaveInputAcceptance();
         }
     }

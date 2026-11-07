@@ -38,16 +38,7 @@ final class OverlayController {
             view.imageAlignment = .alignCenter
             view.autoresizingMask = [.width, .height]
             view.animates = true
-            let container = NSView(frame: view.frame)
-            container.addSubview(view)
-            let hint = NSTextField(labelWithString: "⌃⌥⌘P  输入密码返回桌面")
-            hint.font = .systemFont(ofSize: 12, weight: .medium)
-            hint.textColor = NSColor(calibratedWhite: 0.2, alpha: 0.7)
-            hint.alignment = .center
-            hint.frame = NSRect(x: 0, y: 12, width: screen.frame.width, height: 18)
-            hint.autoresizingMask = [.width, .maxYMargin]
-            container.addSubview(hint)
-            window.contentView = container
+            window.contentView = view
             window.setFrame(screen.frame, display: true)
             window.orderFrontRegardless()
             replacement.append(window)

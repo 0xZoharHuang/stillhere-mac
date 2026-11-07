@@ -39,22 +39,13 @@ final class PreferencesWindow: NSWindowController {
     private let preview = ArtworkView(height: 288, radius: 14)
     private let artworkTitle = NSTextField(labelWithString: "")
     private let artworkSubtitle = NSTextField(labelWithString: "")
-    private let current = NSSecureTextField()
-    private let password = NSSecureTextField()
-    private let confirmation = NSSecureTextField()
-    private let feedback = NSTextField(wrappingLabelWithString: "")
     private let awake = NSButton(checkboxWithTitle: "防窥时保持电脑和显示器唤醒", target: nil, action: nil)
-    private let passwordHeading = NSTextField(labelWithString: "退出密码")
-    private let passwordDetail = NSTextField(wrappingLabelWithString: "")
-    private let changePasswordButton = NSButton(title: "修改密码…", target: nil, action: nil)
-    private let passwordForm = NSStackView()
     private var navigationButtons: [NSButton] = []
     private var wallpaperButtons: [String: NSButton] = [:]
     private var selectedID: String?
     var chooseWallpaper: (() -> Void)?
     var resetWallpaper: (() -> Void)?
     var chooseBuiltIn: ((String) -> Void)?
-    var savePassword: ((String, String, String) -> String?)?
     var changeKeepAwake: ((Bool) -> Void)?
     var enableProtection: (() -> Void)?
 
@@ -160,7 +151,7 @@ final class PreferencesWindow: NSWindowController {
         enable.bezelColor = .controlAccentColor
         enable.contentTintColor = .white
         enable.keyEquivalent = ""
-        let shortcut = secondary("⌃ ⌥ ⌘ P   随时开启或输入密码退出", size: 12)
+        let shortcut = secondary("⌃ ⌥ ⌘ P   开启 / 退出防窥", size: 12)
         let action = row([enable, shortcut], spacing: 14)
         let page = column([header, preview, artworkInfo, action], spacing: 18)
         for v in [header, preview, artworkInfo, action] { v.widthAnchor.constraint(equalTo: page.widthAnchor).isActive = true }
@@ -206,38 +197,12 @@ final class PreferencesWindow: NSWindowController {
     private func makeSettings() -> NSView {
         let title = label("偏好设置", size: 27, weight: .bold)
         let intro = secondary("让在场按你习惯的方式工作。", size: 13)
-        passwordHeading.font = .systemFont(ofSize: 16, weight: .semibold)
-        passwordDetail.textColor = .secondaryLabelColor
-        passwordDetail.font = .systemFont(ofSize: 13)
-        changePasswordButton.target = self
-        changePasswordButton.action = #selector(showPasswordForm)
-        changePasswordButton.bezelStyle = .rounded
-        current.placeholderString = "当前密码"
-        current.setAccessibilityLabel("当前密码")
-        password.placeholderString = "新密码，至少 6 位"
-        password.setAccessibilityLabel("新密码")
-        confirmation.placeholderString = "再次输入新密码"
-        confirmation.setAccessibilityLabel("确认新密码")
-        for field in [current, password, confirmation] { field.controlSize = .large }
-        let saveButton = NSButton(title: "保存退出密码", target: self, action: #selector(save))
-        saveButton.bezelStyle = .rounded
-        saveButton.keyEquivalent = "\r"
-        feedback.font = .systemFont(ofSize: 12)
-        passwordForm.orientation = .vertical
-        passwordForm.alignment = .leading
-        passwordForm.spacing = 8
-        [current, password, confirmation, saveButton].forEach { passwordForm.addArrangedSubview($0) }
-        let section = column([passwordHeading, passwordDetail, changePasswordButton, passwordForm, feedback], spacing: 10)
-        for field in [current, password, confirmation] { field.widthAnchor.constraint(equalTo: passwordForm.widthAnchor).isActive = true }
-        passwordForm.widthAnchor.constraint(equalTo: section.widthAnchor).isActive = true
-        feedback.widthAnchor.constraint(equalTo: section.widthAnchor).isActive = true
-        passwordDetail.widthAnchor.constraint(equalTo: section.widthAnchor).isActive = true
         awake.target = self; awake.action = #selector(awakeChanged)
         let awakeDetail = secondary("适合离席时继续运行自动化。系统锁屏和合盖仍由 macOS 控制。", size: 12)
         let awakeSection = column([label("屏幕与唤醒", size: 16, weight: .semibold), awake, awakeDetail], spacing: 10)
-        let shortcutSection = column([label("快捷键", size: 16, weight: .semibold), secondary("⌃ Control   ⌥ Option   ⌘ Command   P", size: 13), secondary("开启防窥 / 输入密码返回桌面", size: 12)], spacing: 8)
-        let page = column([title, intro, separator(), section, separator(), awakeSection, separator(), shortcutSection], spacing: 16)
-        for v in [section, awakeSection, shortcutSection] { v.widthAnchor.constraint(equalTo: page.widthAnchor).isActive = true }
+        let shortcutSection = column([label("快捷键", size: 16, weight: .semibold), secondary("⌃ Control   ⌥ Option   ⌘ Command   P", size: 13), secondary("按一次开启，再按一次退出防窥。知道快捷键的人也可以退出。", size: 12)], spacing: 8)
+        let page = column([title, intro, separator(), awakeSection, separator(), shortcutSection], spacing: 16)
+        for v in [awakeSection, shortcutSection] { v.widthAnchor.constraint(equalTo: page.widthAnchor).isActive = true }
         for v in page.arrangedSubviews where v is NSBox { v.widthAnchor.constraint(equalTo: page.widthAnchor).isActive = true }
         return scrollPage(page)
     }
@@ -253,31 +218,11 @@ final class PreferencesWindow: NSWindowController {
     @objc private func choose() { chooseWallpaper?() }
     @objc private func builtInClicked(_ sender: NSButton) { if let id = sender.identifier?.rawValue { chooseBuiltIn?(id) } }
     @objc private func awakeChanged() { changeKeepAwake?(awake.state == .on) }
-    @objc private func showPasswordForm() {
-        changePasswordButton.isHidden = true; passwordForm.isHidden = false; current.isHidden = false
-        feedback.stringValue = ""; window?.makeFirstResponder(current)
-    }
-    @objc private func save() {
-        if let error = savePassword?(current.stringValue, password.stringValue, confirmation.stringValue) {
-            feedback.textColor = .systemRed; feedback.stringValue = error
-        } else {
-            feedback.textColor = .systemGreen; feedback.stringValue = "退出密码已保存。"
-            passwordHeading.stringValue = "退出密码"; passwordDetail.stringValue = "退出防窥前需要输入密码。"
-            passwordForm.isHidden = true; changePasswordButton.isHidden = false; current.isHidden = false
-        }
-        clearPasswordFields()
-    }
-    private func clearPasswordFields() { current.stringValue = ""; password.stringValue = ""; confirmation.stringValue = "" }
-    func present(image: NSImage, keepAwake: Bool, configured: Bool, selectedID: String?) {
+    func present(image: NSImage, keepAwake: Bool, selectedID: String?) {
         updateImage(image, selectedID: selectedID)
         awake.state = keepAwake ? .on : .off
-        passwordHeading.stringValue = configured ? "退出密码" : "先设置退出密码"
-        passwordDetail.stringValue = configured ? "解除防窥时需要验证。" : "第一次使用，请设置至少 6 位的退出密码。"
-        changePasswordButton.isHidden = !configured; passwordForm.isHidden = configured; current.isHidden = !configured
-        feedback.stringValue = ""; clearPasswordFields()
-        selectPage(configured ? 0 : 2)
+        selectPage(0)
         showWindow(nil); NSApp.activate(ignoringOtherApps: true); window?.makeKeyAndOrderFront(nil)
-        if !configured { window?.makeFirstResponder(password) }
     }
     func updateImage(_ image: NSImage, selectedID: String?) {
         self.selectedID = selectedID

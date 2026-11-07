@@ -12,7 +12,7 @@ jobs:
       - name: Build candidate
         shell: cmd
         run: windows\build.cmd
-      - name: Exercise capture, native input, and password exit
+      - name: Exercise capture, native input, and shortcut exit
         shell: pwsh
         run: |
           $reports = Join-Path $PWD 'dist/desktop-reports'
@@ -40,14 +40,14 @@ jobs:
       - name: Package the exact tested executable
         shell: pwsh
         run: |
-          Compress-Archive -LiteralPath dist/windows/StillHere.exe -DestinationPath dist/StillHere-0.1.0-windows.zip
-          $hash = (Get-FileHash dist/StillHere-0.1.0-windows.zip -Algorithm SHA256).Hash.ToLowerInvariant()
-          "$hash  StillHere-0.1.0-windows.zip" | Set-Content -Encoding ascii dist/SHA256SUMS-windows.txt
+          Compress-Archive -LiteralPath dist/windows/StillHere.exe -DestinationPath dist/StillHere-0.2.0-windows.zip
+          $hash = (Get-FileHash dist/StillHere-0.2.0-windows.zip -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$hash  StillHere-0.2.0-windows.zip" | Set-Content -Encoding ascii dist/SHA256SUMS-windows.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: StillHere-windows-desktop
           path: |
             dist/desktop-reports/*.json
-            dist/StillHere-0.1.0-windows.zip
+            dist/StillHere-0.2.0-windows.zip
             dist/SHA256SUMS-windows.txt
