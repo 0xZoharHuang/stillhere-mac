@@ -3,7 +3,7 @@ import Carbon
 import StillHereCore
 import UniformTypeIdentifiers
 
-let appVersion = "0.1.0"
+let appVersion = "0.2.0"
 let commandNotification = Notification.Name("dev.0xzohar.stillhere.command")
 
 @MainActor
@@ -123,9 +123,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         if let name = preferences.wallpaperFilename,
            name == URL(fileURLWithPath: name).lastPathComponent,
            let image = NSImage(contentsOf: storage.directory.appendingPathComponent(name)) { return image }
-        let resource = Bundle.main.url(forResource: "ExistentialCapybara", withExtension: "png")
-            ?? Bundle.module.url(forResource: "ExistentialCapybara", withExtension: "png")
-        return resource.flatMap(NSImage.init(contentsOf:)) ?? NSImage(size: NSSize(width: 1600, height: 1000))
+        return BuiltInWallpaper.find(preferences.builtInWallpaperID ?? "capybara")?.image
+            ?? BuiltInWallpaper.find("capybara")?.image ?? NSImage(size: NSSize(width: 1600, height: 1000))
     }
 
     @objc private func toggleProtection() {
@@ -190,12 +189,25 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private func showPreferences() {
         if preferencesWindow == nil {
             let controller = PreferencesWindow()
+            controller.enableProtection = { [weak self] in self?.shield() }
             controller.chooseWallpaper = { [weak self] in self?.chooseWallpaper() }
             controller.resetWallpaper = { [weak self] in
                 guard let self else { return }
                 self.preferences.wallpaperFilename = nil
+                self.preferences.builtInWallpaperID = nil
                 self.savePreferences()
-                self.preferencesWindow?.updateImage(self.wallpaper())
+                self.preferencesWindow?.updateImage(self.wallpaper(), selectedID: "capybara")
+            }
+            controller.chooseBuiltIn = { [weak self] id in
+                guard let self, let item = BuiltInWallpaper.find(id), item.image != nil else { return }
+                var next = self.preferences
+                next.wallpaperFilename = nil
+                next.builtInWallpaperID = id
+                do {
+                    try self.storage.save(next, filename: "preferences.json")
+                    self.preferences = next
+                    self.preferencesWindow?.updateImage(self.wallpaper(), selectedID: id)
+                } catch { self.alert("保存设置失败", error.localizedDescription) }
             }
             controller.changeKeepAwake = { [weak self] value in
                 guard let self else { return }
@@ -218,7 +230,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             }
             preferencesWindow = controller
         }
-        preferencesWindow?.present(image: wallpaper(), keepAwake: preferences.keepAwake, configured: credential != nil)
+        let selectedID = preferences.wallpaperFilename == nil ? (preferences.builtInWallpaperID ?? "capybara") : nil
+        preferencesWindow?.present(image: wallpaper(), keepAwake: preferences.keepAwake, configured: credential != nil, selectedID: selectedID)
     }
 
     private func chooseWallpaper() {
@@ -241,11 +254,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: destination.path)
             let previous = preferences.wallpaperFilename
             preferences.wallpaperFilename = filename
+            preferences.builtInWallpaperID = nil
             try storage.save(preferences, filename: "preferences.json")
             if let previous, previous.hasPrefix("wallpaper-"), previous == URL(fileURLWithPath: previous).lastPathComponent {
                 try? FileManager.default.removeItem(at: storage.directory.appendingPathComponent(previous))
             }
-            preferencesWindow?.updateImage(image)
+            preferencesWindow?.updateImage(image, selectedID: nil)
         } catch { alert("保存图片失败", error.localizedDescription) }
     }
 

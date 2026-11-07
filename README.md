@@ -10,7 +10,7 @@ StillHere 是独立运行的隐私壁纸工具，包含 macOS 和 Windows 原生
 
 ## 下载
 
-- [macOS 0.1.0：ZIP 与 DMG](https://github.com/0xZoharHuang/stillhere-mac/releases/tag/v0.1.0)，Apple Silicon + Intel 通用构建；实际运行验收为 macOS 15.5 / Apple Silicon。
+- [macOS 0.2.0：ZIP 与 DMG](https://github.com/0xZoharHuang/stillhere-mac/releases/tag/v0.2.0)，Apple Silicon + Intel 通用构建；实际运行验收为 macOS 15.5 / Apple Silicon。
 - [Windows 0.1.0 Beta：单文件 EXE 压缩包](https://github.com/0xZoharHuang/stillhere-mac/releases/tag/windows-v0.1.0)，已通过 Windows 10 / build 19045 与 Windows Server 2022 的完整原生桌面验收。Windows 的要求、构建与使用见 [windows/README.md](windows/README.md)。
 
 ## macOS 使用
@@ -21,7 +21,7 @@ StillHere 是独立运行的隐私壁纸工具，包含 macOS 和 Windows 原生
 4. 首次开启会先显示几秒钟的角落测试色块，验证普通截图和 ScreenCaptureKit 都能排除保护层。诊断可能需要你授权录屏；也可以在已有录屏权限的终端运行 `/Applications/StillHere.app/Contents/MacOS/StillHere --diagnose`，应用本身就无需新增录屏权限。检查不通过时不会开启全屏壁纸。
 5. 回来后按同一快捷键，输入退出密码。密码错误或取消对话框时，保护继续生效。
 
-“壁纸与退出密码”可以替换图片、修改退出密码，以及选择是否在防窥期间保持电脑与显示器唤醒。系统主动锁屏、合盖或关机仍由 macOS 处理。
+打开菜单栏的“壁纸与退出密码”，进入全新「概览 / 壁纸库 / 偏好设置」界面。概览可直接开启防窥；壁纸库内有四张原创壁纸，也可选择自己的图片；偏好设置可修改退出密码，以及选择是否在防窥期间保持电脑与显示器唤醒。系统主动锁屏、合盖或关机仍由 macOS 处理。
 
 当前版本只通过菜单、快捷键或命令行请求切换，没有自动离席切换。
 
@@ -65,8 +65,8 @@ bash scripts/package.sh
 产物：
 
 - `dist/StillHere.app`：Apple Silicon + Intel 通用应用。
-- `dist/StillHere-0.1.0-mac.zip`：应用压缩包。
-- `dist/StillHere-0.1.0-mac.dmg`：拖入 Applications 的安装映像。
+- `dist/StillHere-0.2.0-mac.zip`：应用压缩包。
+- `dist/StillHere-0.2.0-mac.dmg`：拖入 Applications 的安装映像。
 - `dist/SHA256SUMS.txt`：安装包校验值。
 
 当前构建使用本地 ad-hoc 签名，尚未经过 Apple 公证。源代码构建不需要 Apple 开发者账号。
@@ -92,7 +92,7 @@ StillHere 提供离席画面遮挡和正常退出验证。它保持登录桌面�
 
 ## 壁纸
 
-默认的“我司雇我在”水豚梗图由内置 imagegen 生成，提示词保存在 [assets/wallpaper-prompt.txt](assets/wallpaper-prompt.txt)。可以在应用内换成自己的 PNG、JPEG、HEIC 或 GIF 图片；静态 PNG 为当前默认交付格式。
+默认的“我司雇我在”水豚梗图及新增三张原创壁纸由内置 imagegen 生成，灵感和提示词见 [assets/wallpaper-gallery.md](assets/wallpaper-gallery.md)。可以在应用内换成自己的 PNG、JPEG、HEIC 或 GIF 图片；静态 PNG 为当前默认交付格式。
 
 ## 原理参考
 

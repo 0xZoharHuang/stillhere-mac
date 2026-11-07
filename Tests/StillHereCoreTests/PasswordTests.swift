@@ -2,6 +2,25 @@ import XCTest
 @testable import StillHereCore
 
 final class PasswordTests: XCTestCase {
+    func testExistingWallpaperPreferencesSurviveGalleryUpgradeAndReload() throws {
+        let folder = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: folder) }
+        let store = AppStorage(directory: folder)
+        try store.prepare()
+        try Data(#"{"wallpaperFilename":"wallpaper-personal.png","keepAwake":false}"#.utf8)
+            .write(to: folder.appendingPathComponent("preferences.json"))
+        var preferences = store.loadPreferences()
+        XCTAssertEqual(preferences.wallpaperFilename, "wallpaper-personal.png")
+        XCTAssertFalse(preferences.keepAwake)
+        XCTAssertNil(preferences.builtInWallpaperID)
+        preferences.wallpaperFilename = nil
+        preferences.builtInWallpaperID = "meeting"
+        try store.save(preferences, filename: "preferences.json")
+        let reloaded = store.loadPreferences()
+        XCTAssertEqual(reloaded.builtInWallpaperID, "meeting")
+        XCTAssertNil(reloaded.wallpaperFilename)
+        XCTAssertFalse(reloaded.keepAwake)
+    }
     func testPBKDF2MatchesIndependentReferenceVector() throws {
         let key = try PasswordCredential.derive(password: "password", salt: Data("salt".utf8), iterations: 4096)
         XCTAssertEqual(key.map { String(format: "%02x", $0) }.joined(),

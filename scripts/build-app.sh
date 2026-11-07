@@ -30,7 +30,7 @@ if [[ "${#binaries[@]}" -gt 1 ]]; then
 else
   cp "${binaries[0]}" "$app_bundle/Contents/MacOS/StillHere"
 fi
-cp Sources/StillHere/Resources/ExistentialCapybara.png "$app_bundle/Contents/Resources/"
+cp Sources/StillHere/Resources/*.png "$app_bundle/Contents/Resources/"
 
 clang -fobjc-arc -mmacosx-version-min=14.0 -Wno-deprecated-declarations "${clang_arches[@]}" \
   -framework AppKit -framework ScreenCaptureKit -framework CoreGraphics \
@@ -56,8 +56,8 @@ cat > "$app_bundle/Contents/Info.plist" <<'PLIST'
   <key>CFBundleExecutable</key><string>StillHere</string>
   <key>CFBundleIconFile</key><string>AppIcon</string>
   <key>CFBundlePackageType</key><string>APPL</string>
-  <key>CFBundleShortVersionString</key><string>0.1.0</string>
-  <key>CFBundleVersion</key><string>1</string>
+  <key>CFBundleShortVersionString</key><string>0.2.0</string>
+  <key>CFBundleVersion</key><string>2</string>
   <key>LSMinimumSystemVersion</key><string>14.0</string>
   <key>LSUIElement</key><true/>
   <key>NSHighResolutionCapable</key><true/>

@@ -3,6 +3,7 @@ import CryptoKit
 
 public struct Preferences: Codable, Equatable {
     public var wallpaperFilename: String?
+    public var builtInWallpaperID: String?
     public var keepAwake: Bool = true
     public init() {}
 }
