@@ -18,12 +18,15 @@ jobs:
         run: bash Tests/Shell/packaging-retry.sh
       - name: Package application
         run: bash scripts/package.sh
+      - name: Package ready-to-use Mac disk image
+        run: bash scripts/package-ready-mac.sh
       - uses: actions/upload-artifact@v4
         with:
           name: StillHere-mac
           path: |
             dist/StillHere-0.3.0-mac.zip
             dist/StillHere-0.3.0-mac.dmg
+            dist/StillHere-0.3.0-mac-ready.dmg
             dist/SHA256SUMS.txt
   windows:
     runs-on: windows-2022
@@ -44,10 +47,19 @@ jobs:
           Compress-Archive -LiteralPath dist/windows/StillHere.exe -DestinationPath dist/StillHere-0.2.0-windows.zip
           $hash = (Get-FileHash dist/StillHere-0.2.0-windows.zip -Algorithm SHA256).Hash.ToLowerInvariant()
           "$hash  StillHere-0.2.0-windows.zip" | Set-Content -Encoding ascii dist/SHA256SUMS-windows.txt
+          py -3 scripts/package-windows.py dist/windows/StillHere.exe dist/StillHere-0.2.0-windows-ready.zip
+          if ($LASTEXITCODE -ne 0) { throw 'Ready package creation or verification failed' }
+          Expand-Archive -LiteralPath dist/StillHere-0.2.0-windows-ready.zip -DestinationPath dist/ready-check
+          if ((Get-FileHash dist/ready-check/StillHere.exe).Hash -ne (Get-FileHash dist/windows/StillHere.exe).Hash) { throw 'Packaged executable differs from tested build' }
+          Add-Type -AssemblyName System.Drawing
+          $images = Get-ChildItem dist/ready-check/Wallpapers/*.png
+          if ($images.Count -ne 8) { throw 'Expected eight wallpapers' }
+          foreach ($file in $images) { $image = [System.Drawing.Image]::FromFile($file.FullName); $image.Dispose() }
       - uses: actions/upload-artifact@v4
         with:
           name: StillHere-windows
           path: |
             dist/StillHere-0.2.0-windows.zip
+            dist/StillHere-0.2.0-windows-ready.zip
             dist/SHA256SUMS-windows.txt
             dist/windows/core-tests.json

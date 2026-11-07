@@ -1,0 +1,16 @@
+{
+  "mac_dmg_sha256": "cf3e9195e327797da66888973df28a536ec27651620239bb0b596afdb52b04e9",
+  "windows_zip_sha256": "76cf0947ddbba6e2db04ce3ffe181812d8e58dbdefbbafc846809b92fc8b7c47",
+  "mac_application_binary_sha256": "5576c95b2eafa06aeb60cc2040e874b0cfdd8735ada5fded6d6e8dc100cd2e58",
+  "windows_executable_sha256": "df23b235fbb34824f158fb2f53c94ab13e67521ad0a8b63653d92454c991b190",
+  "checks": [
+    "Mac DMG mounted read-only: every app file matched the installed build; deep strict signature check passed; instructions, license and Applications link verified.",
+    "Windows ZIP verified against every input: exact previously tested executable, eight artwork files, license, UTF-8 instructions.",
+    "The application binaries are unchanged from the previously documented user and desktop acceptance."
+  ],
+  "limits": [
+    "Mac build is ad-hoc signed, not Developer ID signed or notarized.",
+    "Windows executable is unsigned.",
+    "No independent live UU acceptance was performed."
+  ]
+}

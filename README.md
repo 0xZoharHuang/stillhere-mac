@@ -10,8 +10,7 @@ StillHere 是独立运行的隐私壁纸工具，包含 macOS 和 Windows 原生
 
 ## 下载
 
-- [macOS 0.3.0：ZIP 与 DMG](https://github.com/0xZoharHuang/stillhere-mac/releases/tag/v0.3.0)，Apple Silicon + Intel 通用构建；实际运行验收为 macOS 15.5 / Apple Silicon。
-- [Windows 0.2.0 Beta：单文件 EXE 压缩包](https://github.com/0xZoharHuang/stillhere-mac/releases/tag/windows-v0.2.0)。Windows 的要求、构建与使用见 [windows/README.md](windows/README.md)。
+- [下载 Mac 或 Windows 开箱包](https://github.com/0xZoharHuang/stillhere-mac/releases/tag/distribution-2026.11.07)：均附快速开始说明；Windows 压缩包包含全部 8 张壁纸，解压后即可在设置中选择。Mac 为 Apple Silicon + Intel 通用构建，实际运行验收为 macOS 15.5 / Apple Silicon。Windows 要求见 [windows/README.md](windows/README.md)。
 
 ## macOS 使用
 
@@ -45,7 +44,7 @@ StillHere 是独立运行的隐私壁纸工具，包含 macOS 和 Windows 原生
 
 完整应用的界面、输入和多显示器验收记录见 [verification/README.md](verification/README.md)。上面的结果不代表已经逐一验证每一种自动化、远程软件、显卡和未来系统版本。请在你实际使用的工具中确认截图、点击、输入和再次截图都正常后，再长期离席使用。
 
-用户已在 Mac 显示器前确认旧版壁纸显示正常、可返回桌面；尚未逐块屏幕单独记录观察结果，也没有进行独立的 UU 实时远控会话验收。远程采集会排除壁纸，因此远程桌面截图本身不能代替实体屏幕观察。
+用户已在 Mac 显示器前确认当前版壁纸显示正常、不带快捷键提示且可直接返回桌面；尚未逐块屏幕单独记录观察结果，也没有进行独立的 UU 实时远控会话验收。远程采集会排除壁纸，因此远程桌面截图本身不能代替实体屏幕观察。
 
 防窥不再使用密码；壁纸本身不会显示快捷键提示。
 
@@ -57,6 +56,9 @@ StillHere 是独立运行的隐私壁纸工具，包含 macOS 和 Windows 原生
 swift test
 bash scripts/build-app.sh --universal
 bash scripts/package.sh
+bash scripts/package-ready-mac.sh
+# Windows 上先运行 windows\build.cmd，再运行：
+python scripts/package-windows.py dist/windows/StillHere.exe dist/StillHere-0.2.0-windows-ready.zip
 ```
 
 产物：
@@ -89,7 +91,7 @@ StillHere 提供离席画面遮挡。知道快捷键的人可以直接退出防�
 
 ## 壁纸
 
-macOS 内置的八张职场梗壁纸由 imagegen 生成，灵感和生成记录见 [assets/wallpaper-gallery.md](assets/wallpaper-gallery.md)。可以在应用内换成自己的 PNG、JPEG、HEIC 或 GIF 图片；静态 PNG 为当前默认交付格式。Windows 版本支持自选图片，暂未内置这个图库。
+八张职场梗壁纸由 imagegen 生成，灵感和生成记录见 [assets/wallpaper-gallery.md](assets/wallpaper-gallery.md)。Mac 版本内置图库；Windows 开箱包的 `Wallpapers` 文件夹包含同一组图片，可在应用中通过「选择壁纸」选择。也可选择自己的图片；静态 PNG 为当前默认交付格式。
 
 ## 原理参考
 
