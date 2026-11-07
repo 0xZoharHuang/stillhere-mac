@@ -20,7 +20,7 @@ StillHere 是独立运行的隐私壁纸工具，包含 macOS 和 Windows 原生
 3. 首次开启会先显示几秒钟的角落测试色块，验证普通截图和 ScreenCaptureKit 都能排除保护层。诊断可能需要你授权录屏；也可以在已有录屏权限的终端运行 `/Applications/StillHere.app/Contents/MacOS/StillHere --diagnose`，应用本身就无需新增录屏权限。检查不通过时不会开启全屏壁纸。
 4. 回来后再按一次相同快捷键，立即返回桌面。壁纸上不显示快捷键提示。
 
-打开菜单栏的“壁纸与设置”，进入全新「概览 / 壁纸库 / 偏好设置」界面。概览可直接开启防窥；壁纸库内有四张原创壁纸，也可选择自己的图片；偏好设置可选择是否在防窥期间保持电脑与显示器唤醒。系统主动锁屏、合盖或关机仍由 macOS 处理。
+打开菜单栏的“壁纸与设置”，进入「概览 / 壁纸库 / 偏好设置」界面。概览可直接开启防窥；macOS 壁纸库内有八张原创壁纸，也可选择自己的图片；偏好设置可选择是否在防窥期间保持电脑与显示器唤醒。系统主动锁屏、合盖或关机仍由 macOS 处理。
 
 当前版本只通过菜单、快捷键或命令行请求切换，没有自动离席切换。
 
@@ -89,7 +89,7 @@ StillHere 提供离席画面遮挡。知道快捷键的人可以直接退出防�
 
 ## 壁纸
 
-默认的“我司雇我在”水豚梗图及新增三张原创壁纸由内置 imagegen 生成，灵感和提示词见 [assets/wallpaper-gallery.md](assets/wallpaper-gallery.md)。可以在应用内换成自己的 PNG、JPEG、HEIC 或 GIF 图片；静态 PNG 为当前默认交付格式。
+macOS 内置的八张职场梗壁纸由 imagegen 生成，灵感和生成记录见 [assets/wallpaper-gallery.md](assets/wallpaper-gallery.md)。可以在应用内换成自己的 PNG、JPEG、HEIC 或 GIF 图片；静态 PNG 为当前默认交付格式。Windows 版本支持自选图片，暂未内置这个图库。
 
 ## 原理参考
 

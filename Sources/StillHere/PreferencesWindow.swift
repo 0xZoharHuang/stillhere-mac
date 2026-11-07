@@ -14,7 +14,11 @@ struct BuiltInWallpaper {
         .init(id: "capybara", resource: "ExistentialCapybara", title: "我司雇我在", subtitle: "低功耗哲学家"),
         .init(id: "meeting", resource: "MeetingEmail", title: "本来可以是封邮件", subtitle: "会议生存指南"),
         .init(id: "away", resource: "AwayWorking", title: "人在休息，活在运行", subtitle: "赛博同事在线"),
-        .init(id: "elsewhere", resource: "QuietOffice", title: "正在装作不在工位", subtitle: "安静离席中")
+        .init(id: "elsewhere", resource: "QuietOffice", title: "正在装作不在工位", subtitle: "安静离席中"),
+        .init(id: "inbox", resource: "InboxReply", title: "已读，乱回", subtitle: "收件箱求生指南"),
+        .init(id: "fish", resource: "FishMode", title: "正在认真摸鱼", subtitle: "深度摸鱼模式"),
+        .init(id: "loading", resource: "LoadingDog", title: "精神状态：加载中", subtitle: "请耐心等待 99%"),
+        .init(id: "pie", resource: "PieReserve", title: "老板画的饼，先放冰箱", subtitle: "战略储备，慢慢消化")
     ]
     static func find(_ id: String?) -> BuiltInWallpaper? { all.first { $0.id == id } }
 }
@@ -164,7 +168,8 @@ final class PreferencesWindow: NSWindowController {
         var rows: [NSView] = []
         for pair in stride(from: 0, to: BuiltInWallpaper.all.count, by: 2) {
             let a = wallpaperCard(BuiltInWallpaper.all[pair])
-            let b = wallpaperCard(BuiltInWallpaper.all[pair + 1])
+            let b: NSView = pair + 1 < BuiltInWallpaper.all.count
+                ? wallpaperCard(BuiltInWallpaper.all[pair + 1]) : NSView()
             let line = row([a, b], spacing: 14)
             line.distribution = .fillEqually
             rows.append(line)

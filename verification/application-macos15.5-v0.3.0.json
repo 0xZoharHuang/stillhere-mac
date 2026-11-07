@@ -1,0 +1,33 @@
+{
+  "platform": "macOS 15.5 (24F74), Apple Silicon, two displays",
+  "version": "0.3.0 beta",
+  "direct_toggle_build": "db79cfe65be881f87f38d0e138043e390f42af22",
+  "direct_toggle_checks": {
+    "profile": "isolated; deliberately corrupt legacy credential was ignored",
+    "capture_qualification": "existing same-machine result reused",
+    "hotkey_enabled": true,
+    "independent_native_capture_and_input_through_two_privacy_windows": true,
+    "hotkey_disabled_without_password": true,
+    "quit_while_active_released_windows_and_power_assertions": true
+  },
+  "final_gallery_build": {
+    "bundled_wallpapers": 8,
+    "gallery_scroll_and_select": true,
+    "selection_survived_restart": true,
+    "selected_user_profile_preserved": true,
+    "swift_tests_passed": 8,
+    "universal_build": true,
+    "codesign_strict_verification": true,
+    "zip_bundle_files_match": 13,
+    "installed_binary_sha256": "5576c95b2eafa06aeb60cc2040e874b0cfdd8735ada5fded6d6e8dc100cd2e58",
+    "zip_sha256": "39897803f2c3f3386fdceb8d2ee75dfca0c55db7e6d4422ced2d62d9dfbe68ab",
+    "dmg_sha256": "364798f4a8ff66b3cacb1d535f095b3e346549bb9d14f239d8a90017d5c4fd37",
+    "installed_state": "running, protection off, shortcut registered"
+  },
+  "limits": [
+    "The final gallery build was not independently exercised in a live UU video session.",
+    "The physical screen was previously confirmed by the user on 0.2.0; no separate physical observation of the no-hint 0.3.0 build is recorded.",
+    "The Intel slice was compiled, not run on Intel hardware.",
+    "The app is ad-hoc signed and not notarized."
+  ]
+}

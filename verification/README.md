@@ -12,6 +12,8 @@ The macOS 15.5 / 24F74 results are in [mechanism-macos15.5.json](mechanism-macos
 
 ## Application acceptance
 
+The macOS 0.3.0 shortcut-and-gallery acceptance is recorded separately in [application-macos15.5-v0.3.0.json](application-macos15.5-v0.3.0.json). The direct-toggle input journey was exercised on the preceding 0.3.0 build; the final gallery build changed the wallpaper catalog and UI only, and its scrolling, selection, persistence and installed package were checked separately. Neither this nor the earlier user confirmation establishes a live UU video test of 0.3.0.
+
 The redesigned macOS 0.2.0 application has a separate record at [application-macos15.5-v0.2.0.json](application-macos15.5-v0.2.0.json): installed-bundle, ZIP and read-only DMG file checks; visual inspection of overview, library, preferences and unlock; gallery selection persistence; legacy preference migration; and native button, shortcut and authentication behavior on two displays using an isolated test profile. The existing same-build capture qualification was reused. The earlier 0.1.0 record below remains historical evidence.
 
 [distribution-macos0.2.0.json](distribution-macos0.2.0.json) records a fresh download from the public 0.2.0 Beta release; both installers and the checksum file match the locally verified files.
@@ -31,6 +33,8 @@ Raw per-user profiles, password verifiers, local runtime state, and desktop scre
 [distribution.json](distribution.json) records the ZIP and DMG checksums. Both were unpacked or mounted read-only, and every application-bundle file matched the built and installed copy. Deep, strict code-signature verification passed. The DMG's Applications shortcut points to `/Applications`, and the image was detached after the check. The build is ad-hoc signed and is not Apple-notarized.
 
 ## Windows desktop acceptance
+
+Windows 0.2.0's no-password shortcut journey is documented in [application-windows10-v0.2.0.json](application-windows10-v0.2.0.json). The tested executable was also installed on the authorized Windows 10 machine and read back with privacy off. An independent live UU video/input journey for this version and physical-panel observation remain unverified.
 
 [application-windows-server2022.json](application-windows-server2022.json) records the final Windows Beta on a GitHub Windows Server 2022 / build 20348 interactive desktop (session 2). Seven core checks passed. Both the standalone and first-enable capture probes passed the ordinary-cover positive control, exclusion, live-update and unchanged-foreground checks.
 
@@ -54,4 +58,4 @@ bash scripts/build-app.sh --universal
 bash scripts/diagnose.sh
 ```
 
-For a real automation check, open the application with `--fixture`, enable privacy, and use the actual automation tool to read the fixture, click its input, enter a new phrase, click the record button, and capture the changed result. Verify that a wrong exit password leaves the mask active, while the correct password removes it. Confirm the physical wallpaper separately by local observation.
+For a real automation check, open the application with `--fixture`, enable privacy, and use the actual automation tool to read the fixture, click its input, enter a new phrase, click the record button, and capture the changed result. Press the same shortcut to remove the wallpaper, then confirm physical display behavior separately by local observation.

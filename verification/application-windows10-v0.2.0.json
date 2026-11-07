@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0 beta",
+  "source_commit": "db79cfe65be881f87f38d0e138043e390f42af22",
+  "platform": "Windows 10 build 19045, authorized desktop host",
+  "package_sha256": "1b8f1ea7b320e2441fc014c530580dc4234f35852bdb5676bbd9d537dd48cb14",
+  "tested_and_installed_exe_sha256": "df23b235fbb34824f158fb2f53c94ab13e67521ad0a8b63653d92454c991b190",
+  "core_checks_passed": 7,
+  "capture_qualification": {
+    "normal_control": "magenta",
+    "excluded_capture": "green",
+    "live_update": "cyan",
+    "foreground_unchanged": true,
+    "probe_took_focus": false
+  },
+  "isolated_native_input_journey": {
+    "phase": "passed",
+    "shortcut_enabled": true,
+    "typed_and_clicked_while_protected": true,
+    "shortcut_disabled": true,
+    "shortcut_reenabled": true,
+    "quit_acknowledged": true,
+    "quit_exited": true,
+    "protection_released": true
+  },
+  "installed_readback": "version 0.2.0 running; shortcut registered; protection off; password not required; one installed process",
+  "limits": [
+    "The native test is not an independent live UU video or remote input acceptance.",
+    "The physical display was not independently observed for this build.",
+    "The executable is not code signed."
+  ]
+}

@@ -2,7 +2,7 @@
 
 Windows 原生托盘版本，使用系统自带的 .NET Framework 4.8，无需安装新的 .NET SDK。最低系统为 Windows 10 2004 / build 19041。
 
-当前开发版本为 Windows 0.2.0 Beta：快捷键直接开启和退出，不再要求密码。旧版 0.1.0 已在 Windows 10 / build 19045 与 Windows Server 2022 通过原生输入验收；新版本结果见验收记录。
+当前版本为 Windows 0.2.0 Beta：快捷键直接开启和退出，不再要求密码。Windows 10 / build 19045 的原生输入验收与安装读回见[验收记录](../verification/application-windows10-v0.2.0.json)。
 
 旧版记录见 [application-windows10.json](../verification/application-windows10.json) 和 [application-windows-server2022.json](../verification/application-windows-server2022.json)。
 
