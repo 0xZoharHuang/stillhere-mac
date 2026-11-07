@@ -12,7 +12,7 @@ The macOS 15.5 / 24F74 results are in [mechanism-macos15.5.json](mechanism-macos
 
 ## Application acceptance
 
-The macOS 0.3.0 shortcut-and-gallery acceptance is recorded separately in [application-macos15.5-v0.3.0.json](application-macos15.5-v0.3.0.json). The direct-toggle input journey was exercised on the preceding 0.3.0 build; the final gallery build changed the wallpaper catalog and UI only, and its scrolling, selection, persistence and installed package were checked separately. Neither this nor the earlier user confirmation establishes a live UU video test of 0.3.0.
+The macOS 0.3.0 shortcut-and-gallery acceptance is recorded separately in [application-macos15.5-v0.3.0.json](application-macos15.5-v0.3.0.json). The direct-toggle input journey was exercised on the preceding 0.3.0 build; the final gallery build changed the wallpaper catalog and UI only, and its scrolling, selection, persistence and installed package were checked separately. The user confirmed the final installed version displayed normally without a shortcut hint and exited directly. This does not establish a live UU video test of 0.3.0.
 
 The redesigned macOS 0.2.0 application has a separate record at [application-macos15.5-v0.2.0.json](application-macos15.5-v0.2.0.json): installed-bundle, ZIP and read-only DMG file checks; visual inspection of overview, library, preferences and unlock; gallery selection persistence; legacy preference migration; and native button, shortcut and authentication behavior on two displays using an isolated test profile. The existing same-build capture qualification was reused. The earlier 0.1.0 record below remains historical evidence.
 

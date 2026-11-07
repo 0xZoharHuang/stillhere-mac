@@ -22,11 +22,12 @@
     "installed_binary_sha256": "5576c95b2eafa06aeb60cc2040e874b0cfdd8735ada5fded6d6e8dc100cd2e58",
     "zip_sha256": "39897803f2c3f3386fdceb8d2ee75dfca0c55db7e6d4422ced2d62d9dfbe68ab",
     "dmg_sha256": "364798f4a8ff66b3cacb1d535f095b3e346549bb9d14f239d8a90017d5c4fd37",
-    "installed_state": "running, protection off, shortcut registered"
+    "installed_state": "running, protection off, shortcut registered",
+    "physical_display": "user reported the wallpaper displayed normally with no shortcut hint and the shortcut returned directly to the desktop"
   },
   "limits": [
     "The final gallery build was not independently exercised in a live UU video session.",
-    "The physical screen was previously confirmed by the user on 0.2.0; no separate physical observation of the no-hint 0.3.0 build is recorded.",
+    "The user's physical observation is not a separate per-display inspection record.",
     "The Intel slice was compiled, not run on Intel hardware.",
     "The app is ad-hoc signed and not notarized."
   ]
