@@ -3,15 +3,16 @@ set -euo pipefail
 project_root="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$project_root"
 test -d dist/StillHere.app
-ditto -c -k --sequesterRsrc --keepParent dist/StillHere.app dist/StillHere-0.3.0-mac.zip
+ditto -c -k --sequesterRsrc --keepParent dist/StillHere.app dist/StillHere-0.4.0-mac.zip
 staging="$project_root/.build/dmg-stage"
 mkdir -p "$staging"
+rm -rf "$staging/StillHere.app"
 ditto dist/StillHere.app "$staging/StillHere.app"
 if [[ ! -e "$staging/Applications" ]]; then ln -s /Applications "$staging/Applications"; fi
 error_log="$project_root/.build/hdiutil-create.log"
 for attempt in 1 2 3 4 5; do
   if hdiutil create -volname "StillHere" -srcfolder "$staging" -ov -format UDZO \
-      dist/StillHere-0.3.0-mac.dmg 2>"$error_log"; then
+      dist/StillHere-0.4.0-mac.dmg 2>"$error_log"; then
     break
   fi
   error_text="$(<"$error_log")"
@@ -24,5 +25,5 @@ for attempt in 1 2 3 4 5; do
 done
 (
   cd dist
-  shasum -a 256 StillHere-0.3.0-mac.zip StillHere-0.3.0-mac.dmg > SHA256SUMS.txt
+  shasum -a 256 StillHere-0.4.0-mac.zip StillHere-0.4.0-mac.dmg > SHA256SUMS.txt
 )

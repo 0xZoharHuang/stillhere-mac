@@ -1,0 +1,27 @@
+{
+  "version": "0.4.0 beta",
+  "platform": "macOS 15.5 / Apple Silicon; universal arm64 and x86_64 build",
+  "gallery": {
+    "catalog_entries": 24,
+    "bilingual_images_visually_reviewed": true,
+    "mac_windows_sources_and_gallery_match": true,
+    "group_headings_and_scroll_checked": true,
+    "new_wallpaper_selection_and_preview_checked": true,
+    "selection_survived_restart_in_isolated_profile": true
+  },
+  "build_and_package": {
+    "swift_tests_passed": 8,
+    "packaging_retry_checks_passed": true,
+    "ready_dmg_read_only_mount_verified": true,
+    "mac_app_sha256": "1036d87f4e99a10aba6119f8304121b07dd88f19745efec4b4ce1499ae2b2f61",
+    "mac_ready_dmg_sha256": "1e268416ca1f2ba7f2525b07e452b042a1504cb1de71a4addbb52efd71bd90c1",
+    "windows_ready_zip_sha256": "84b8160b25631eda2d47ecdd8449f3b45b43b120307620d2b9876ea39127ae31",
+    "windows_exe_sha256": "df23b235fbb34824f158fb2f53c94ab13e67521ad0a8b63653d92454c991b190"
+  },
+  "limits": [
+    "The previous 0.3.0 Mac build had a separate native automation and user-reported physical display check; those results are not relabeled as direct tests of 0.4.0.",
+    "No independent live UU Remote video-and-input test was performed for this release.",
+    "The Intel slice was built, not run on Intel hardware.",
+    "Mac build is ad-hoc signed and not notarized; Windows executable is unsigned."
+  ]
+}

@@ -10,6 +10,8 @@ jobs:
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
+      - name: Check shared wallpaper catalog
+        run: python3 scripts/check-wallpaper-catalog.py
       - name: Password and storage checks
         run: swift test
       - name: Build universal application
@@ -24,14 +26,19 @@ jobs:
         with:
           name: StillHere-mac
           path: |
-            dist/StillHere-0.3.0-mac.zip
-            dist/StillHere-0.3.0-mac.dmg
-            dist/StillHere-0.3.0-mac-ready.dmg
+            dist/StillHere-0.4.0-mac.zip
+            dist/StillHere-0.4.0-mac.dmg
+            dist/StillHere-0.4.0-mac-ready.dmg
             dist/SHA256SUMS.txt
   windows:
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
+      - name: Check shared wallpaper catalog
+        shell: pwsh
+        run: |
+          py -3 scripts/check-wallpaper-catalog.py
+          if ($LASTEXITCODE -ne 0) { throw 'Wallpaper catalog check failed' }
       - name: Build native Windows application
         shell: cmd
         run: windows\build.cmd
@@ -53,7 +60,7 @@ jobs:
           if ((Get-FileHash dist/ready-check/StillHere.exe).Hash -ne (Get-FileHash dist/windows/StillHere.exe).Hash) { throw 'Packaged executable differs from tested build' }
           Add-Type -AssemblyName System.Drawing
           $images = Get-ChildItem dist/ready-check/Wallpapers/*.png
-          if ($images.Count -ne 8) { throw 'Expected eight wallpapers' }
+          if ($images.Count -ne 24) { throw 'Expected 24 wallpapers' }
           foreach ($file in $images) { $image = [System.Drawing.Image]::FromFile($file.FullName); $image.Dispose() }
       - uses: actions/upload-artifact@v4
         with:

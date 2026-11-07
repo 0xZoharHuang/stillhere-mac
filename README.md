@@ -1,103 +1,74 @@
-# 在场 · StillHere
+<div align="center">
 
+# StillHere · 在场
+
+**Step away. Your work stays.**  
 **人可以离席，工作继续在场。**
 
-StillHere 是独立运行的隐私壁纸工具，包含 macOS 和 Windows 原生实现。开启后，物理显示器显示自选图片，桌面会话继续运行；保护层不接收鼠标事件，也不取得键盘焦点。再次按快捷键即可退出防窥。
+A privacy wallpaper for macOS and Windows, made for people whose automation keeps working after they leave their desk.
 
-它不依赖 UU 或其他远程连接。你可以离开电脑，让自动化继续工作，偶尔再通过远程工具连接并操作桌面。
+[Download Beta](https://github.com/0xZoharHuang/stillhere-mac/releases/tag/v0.4.0) · [简体中文](README.zh-CN.md) · [Discuss](https://github.com/0xZoharHuang/stillhere-mac/discussions) · [Report a bug](https://github.com/0xZoharHuang/stillhere-mac/issues/new/choose)
 
-![默认梗图：我司雇我在](Sources/StillHere/Resources/ExistentialCapybara.png)
+![I am paid, therefore I am — a capybara contemplating office life](Sources/StillHere/Resources/ExistentialCapybara.png)
 
-## 下载
+</div>
 
-- [下载 Mac 或 Windows 开箱包](https://github.com/0xZoharHuang/stillhere-mac/releases/tag/distribution-2026.11.07)：均附快速开始说明；Windows 压缩包包含全部 8 张壁纸，解压后即可在设置中选择。Mac 为 Apple Silicon + Intel 通用构建，实际运行验收为 macOS 15.5 / Apple Silicon。Windows 要求见 [windows/README.md](windows/README.md)。
+## What is this?
 
-## macOS 使用
+You leave your desk. StillHere puts a wallpaper on the physical display while the desktop session underneath keeps running. On supported capture paths, the wallpaper is omitted from screen captures, so automation and remote-control tools can continue to see the desktop. It runs independently of any remote-control app.
 
-1. 打开 `StillHere.app`。应用常驻菜单栏，名称为“在场”。
-2. 从菜单选择“开启隐私壁纸”，或按 **Control + Option + Command + P**。
-3. 首次开启会先显示几秒钟的角落测试色块，验证普通截图和 ScreenCaptureKit 都能排除保护层。诊断可能需要你授权录屏；也可以在已有录屏权限的终端运行 `/Applications/StillHere.app/Contents/MacOS/StillHere --diagnose`，应用本身就无需新增录屏权限。检查不通过时不会开启全屏壁纸。
-4. 回来后再按一次相同快捷键，立即返回桌面。壁纸上不显示快捷键提示。
+**This is a visual privacy cover, not a lock screen.** Anyone at the computer who knows the shortcut can dismiss it, and the underlying session remains interactive. Capture and input compatibility depend on the OS and the tool: test your own workflow before relying on it.
 
-打开菜单栏的“壁纸与设置”，进入「概览 / 壁纸库 / 偏好设置」界面。概览可直接开启防窥；macOS 壁纸库内有八张原创壁纸，也可选择自己的图片；偏好设置可选择是否在防窥期间保持电脑与显示器唤醒。系统主动锁屏、合盖或关机仍由 macOS 处理。
+- **One shortcut:** toggle privacy on and off without a password; no shortcut instructions on the wallpaper.
+- **Wallpapers with personality:** a bilingual Chinese–English collection, plus your own image.
+- **Works offline:** no account, server, or network connection is required by StillHere.
+- **A compatibility gate:** the app checks capture behavior before enabling the full-screen cover; if the check fails, it stays off.
 
-当前版本只通过菜单、快捷键或命令行请求切换，没有自动离席切换。
+## Download and start
 
-移动鼠标、普通按键和自动化输入不会自动解除保护。退出应用也会移除壁纸。
+Get the [latest Beta packages](https://github.com/0xZoharHuang/stillhere-mac/releases/tag/v0.4.0). The app interface is currently **in Chinese**; both downloads include English and Chinese quick-start instructions.
 
-## 自动化兼容性
+| Platform | Package | Toggle shortcut |
+| --- | --- | --- |
+| macOS 14+ | `StillHere-0.4.0-mac-ready.dmg` — drag the app to Applications | **Control + Option + Command + P** |
+| Windows 10 2004+ / .NET Framework 4.8 | `StillHere-0.2.0-windows-ready.zip` — extract all files, then open `StillHere.exe` | **Ctrl + Alt + Shift + P** |
 
-本工具使用 `NSWindow.sharingType = .none`，并把壁纸窗口设为鼠标穿透、不能成为键盘焦点的窗口。采集排除是一项**必须按系统版本和采集方式验证的行为**。Apple 的最新文档已将旧式窗口共享标记列为 legacy；因此本工具不会把该属性当成跨版本保证。
+On Mac, open **壁纸与设置** (Wallpaper & Settings) from the menu bar and select **壁纸库** (Wallpaper Library). On Windows, choose **选择壁纸** (Choose wallpaper) and select an image in the included `Wallpapers` folder. Both platforms also support your own image.
 
-首次开启与系统 build 变化后，都需要重新通过采集检查。检查同时包含普通遮挡窗口的阳性对照，避免把“测试窗口没显示出来”误判成排除成功。
+The macOS app is ad-hoc signed and not notarized, and the Windows executable is unsigned. Your OS may show an unknown-developer warning. Verify the source and checksums before deciding to run the app; see [Apple's guidance](https://support.apple.com/en-us/102445) for macOS.
 
-已在 macOS 15.5 / build 24F74 上确认：
+## The wallpaper collection
 
-| 路径 | 结果 |
+The gallery combines workplace and AI-agent humor with 24 original illustrations. Each design has Chinese and English text. Mac includes the gallery in the app; the Windows download includes the same images in a folder.
+
+| Context window full | Tested by prayer |
 | --- | --- |
-| 普通 `CGWindowListCreateImage` 截图 | 保护层排除，下面画面可见 |
-| ScreenCaptureKit，未设置排除列表 | 保护层排除，下面画面可见 |
-| ScreenCaptureKit，显式排除窗口的对照 | 下面画面可见 |
-| 测试保护层出现前后的前台应用 | 保持一致 |
-| 原生电脑操作工具截图、点击、输入、再次截图 | 通过；能读到更新后的测试内容 |
-| 旧版快捷键、密码及保护层 | 通过；新版本快捷键切换结果见各版本验收记录 |
+| ![上下文已耗尽 / Context window full](Sources/StillHere/Resources/ContextFull.png) | ![代码已通过祈祷 / Tested by prayer](Sources/StillHere/Resources/TestedByPrayer.png) |
+| More agents, less sleep | Either the code runs, or I do |
+| ![多智能体，少睡眠 / More agents, less sleep](Sources/StillHere/Resources/MoreAgents.png) | ![我和代码，总有一个能跑 / Either the code runs, or I do](Sources/StillHere/Resources/RunOrRun.png) |
 
-完整应用的界面、输入和多显示器验收记录见 [verification/README.md](verification/README.md)。上面的结果不代表已经逐一验证每一种自动化、远程软件、显卡和未来系统版本。请在你实际使用的工具中确认截图、点击、输入和再次截图都正常后，再长期离席使用。
+[Browse all 24 wallpapers](docs/WALLPAPERS.md) · [Artwork notes and inspiration](assets/wallpaper-gallery.md)
 
-用户已在 Mac 显示器前确认当前版壁纸显示正常、不带快捷键提示且可直接返回桌面；尚未逐块屏幕单独记录观察结果，也没有进行独立的 UU 实时远控会话验收。远程采集会排除壁纸，因此远程桌面截图本身不能代替实体屏幕观察。
+## Compatibility, honestly
 
-防窥不再使用密码；壁纸本身不会显示快捷键提示。
+The app does not lock the machine, stop sleep or lid-close behavior, or promise compatibility with every capture API. On macOS it uses a non-activating, mouse-transparent window and a system sharing flag; on Windows it uses `WDA_EXCLUDEFROMCAPTURE` and a non-activating, mouse-transparent window. Both implementations gate activation on a capture check.
 
-## 安装与构建
+The documented macOS 15.5 / Apple Silicon check exercised capture, clicks and typing under the cover. The Windows 10 19045 and Windows Server 2022 checks exercised a guarded native-input fixture. These are specific observations, not a guarantee for every version or remote app. A live UU Remote video-and-input journey for the current release has not been independently verified. See [verification](verification/README.md) for the precise scope.
 
-构建要求：macOS、Xcode Command Line Tools、Swift 5.9 或更新版本。部署目标为 macOS 14.0；当前实际运行验证环境为 macOS 15.5。
+## Build from source
 
 ```bash
+# macOS: Xcode Command Line Tools and Swift 5.9+
 swift test
 bash scripts/build-app.sh --universal
 bash scripts/package.sh
 bash scripts/package-ready-mac.sh
-# Windows 上先运行 windows\build.cmd，再运行：
-python scripts/package-windows.py dist/windows/StillHere.exe dist/StillHere-0.2.0-windows-ready.zip
 ```
 
-产物：
+For Windows build instructions, see [windows/README.md](windows/README.md). No credentials or personal profile are included in the release packages.
 
-- `dist/StillHere.app`：Apple Silicon + Intel 通用应用。
-- `dist/StillHere-0.3.0-mac.zip`：应用压缩包。
-- `dist/StillHere-0.3.0-mac.dmg`：拖入 Applications 的安装映像。
-- `dist/SHA256SUMS.txt`：安装包校验值。
+## Contributing
 
-当前构建使用本地 ad-hoc 签名，尚未经过 Apple 公证。源代码构建不需要 Apple 开发者账号。
+Tested on another OS version or remote tool? Found a wallpaper idea, a bug, or a better translation? [Open an issue](https://github.com/0xZoharHuang/stillhere-mac/issues/new/choose), [join the discussion](https://github.com/0xZoharHuang/stillhere-mac/discussions), or see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## 诊断与命令行
-
-```bash
-bash scripts/diagnose.sh
-dist/StillHere.app/Contents/MacOS/StillHere --status
-dist/StillHere.app/Contents/MacOS/StillHere --shield
-dist/StillHere.app/Contents/MacOS/StillHere --unlock
-```
-
-`--unlock` 直接移除隐私壁纸；`--quit` 退出应用并移除壁纸。
-
-开发时可以用 `STILLHERE_DATA_DIR` 指向隔离目录，避免修改日常配置。`--fixture` 会打开独立的自动化验证窗口，`--close-fixture` 关闭它；这些窗口不会出现在正常使用流程中。
-
-## 本地数据与保护边界
-
-数据保存在 `~/Library/Application Support/StillHere/`。应用不上传图片或截图，也不连接服务器。旧版本保存的密码校验文件不会被删除，但此版本不会读取或使用它。
-
-StillHere 提供离席画面遮挡。知道快捷键的人可以直接退出防窥，桌面也保持可操作；它不能替代系统锁屏对物理访问的隔离。
-
-## 壁纸
-
-八张职场梗壁纸由 imagegen 生成，灵感和生成记录见 [assets/wallpaper-gallery.md](assets/wallpaper-gallery.md)。Mac 版本内置图库；Windows 开箱包的 `Wallpapers` 文件夹包含同一组图片，可在应用中通过「选择壁纸」选择。也可选择自己的图片；静态 PNG 为当前默认交付格式。
-
-## 原理参考
-
-- [Apple：ScreenCaptureKit 的采集过滤与遮挡窗口](https://developer.apple.com/videos/play/wwdc2022/10155/)
-- [Apple：窗口鼠标穿透](https://developer.apple.com/documentation/appkit/nswindow/ignoresmouseevents)
-- [Apple：窗口共享属性的当前状态](https://developer.apple.com/documentation/appkit/nswindow/sharingtype-swift.enum)
-- [Electron：当前 macOS 的采集排除兼容性说明](https://www.electronjs.org/docs/latest/api/browser-window#winsetcontentprotectionenable-macos-windows)
-
-MIT License.
+[MIT License](LICENSE) · [中文说明](README.zh-CN.md)

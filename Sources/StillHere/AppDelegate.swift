@@ -3,7 +3,7 @@ import Carbon
 import StillHereCore
 import UniformTypeIdentifiers
 
-let appVersion = "0.3.0"
+let appVersion = "0.4.0"
 let commandNotification = Notification.Name("dev.0xzohar.stillhere.command")
 
 @MainActor

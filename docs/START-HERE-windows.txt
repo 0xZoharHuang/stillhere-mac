@@ -2,7 +2,7 @@
 
 1. 先将压缩包完整解压到一个保留的位置（例如文档中的 StillHere 文件夹）。
 2. 双击 StillHere.exe。应用会出现在系统托盘，首次打开会显示设置窗口。
-3. 点击「选择壁纸」，进入本文件夹的 Wallpapers，可选择随包附带的 8 张原创壁纸，也可以选择自己的图片。
+3. 点击「选择壁纸」，进入本文件夹的 Wallpapers，可选择随包附带的 24 张原创壁纸，也可以选择自己的图片。
 4. 按 Ctrl + Alt + Shift + P 开启防窥，再按一次直接退出；也可以通过托盘菜单操作。
 
 首次开启会进行采集兼容性检查。检查不通过时不会开启防窥。Windows 10 2004（19041）或更新版本，需 .NET Framework 4.8。
@@ -12,3 +12,12 @@
 防窥时电脑仍可操作，知道快捷键的人可直接退出；它不等同于系统锁屏。远程与自动化软件使用的采集方式各不相同，请先用自己的工具测试画面和操作。本版本未完成独立 UU 实时远控验收。
 
 项目和更新：https://github.com/0xZoharHuang/stillhere-mac
+
+ENGLISH — QUICK START
+1. Extract the entire ZIP to a permanent folder, then open StillHere.exe.
+2. In the Chinese settings window, click 选择壁纸 (Choose wallpaper) and select an image from the included Wallpapers folder.
+3. Press Ctrl + Alt + Shift + P to show the wallpaper; press it again to return to the desktop. The tray menu also controls privacy.
+
+First use runs a capture compatibility check; privacy stays off if it fails. Requires Windows 10 2004 / build 19041 or later and .NET Framework 4.8. The executable is unsigned, so Windows or the browser may warn about an unknown publisher; verify the source and checksum before deciding to run it.
+
+Anyone who knows the shortcut can exit privacy, and the desktop remains operable. This is not a replacement for the system lock screen. Test your own remote-control and automation tools before relying on it; live UU Remote compatibility has not been independently verified for this build.

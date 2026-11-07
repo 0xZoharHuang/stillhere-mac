@@ -30,6 +30,8 @@ if [[ "${#binaries[@]}" -gt 1 ]]; then
 else
   cp "${binaries[0]}" "$app_bundle/Contents/MacOS/StillHere"
 fi
+# dist is generated output; remove old generated artwork before copying the current catalog.
+rm -f "$app_bundle/Contents/Resources/"*.png
 cp Sources/StillHere/Resources/*.png "$app_bundle/Contents/Resources/"
 
 clang -fobjc-arc -mmacosx-version-min=14.0 -Wno-deprecated-declarations "${clang_arches[@]}" \
@@ -56,8 +58,8 @@ cat > "$app_bundle/Contents/Info.plist" <<'PLIST'
   <key>CFBundleExecutable</key><string>StillHere</string>
   <key>CFBundleIconFile</key><string>AppIcon</string>
   <key>CFBundlePackageType</key><string>APPL</string>
-  <key>CFBundleShortVersionString</key><string>0.3.0</string>
-  <key>CFBundleVersion</key><string>3</string>
+  <key>CFBundleShortVersionString</key><string>0.4.0</string>
+  <key>CFBundleVersion</key><string>4</string>
   <key>LSMinimumSystemVersion</key><string>14.0</string>
   <key>LSUIElement</key><true/>
   <key>NSHighResolutionCapable</key><true/>

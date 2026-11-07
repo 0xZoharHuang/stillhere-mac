@@ -7,8 +7,12 @@ from zipfile import ZIP_DEFLATED, ZipFile
 
 ROOT = Path(__file__).resolve().parent.parent
 ARTWORK = (
-    "ExistentialCapybara", "MeetingEmail", "AwayWorking", "QuietOffice",
-    "InboxReply", "FishMode", "LoadingDog", "PieReserve",
+    "ExistentialCapybara", "MeetingEmail", "AwayWorking", "QuietOfficeBilingual",
+    "InboxReplyBilingual", "FishModeBilingual", "LoadingDogBilingual", "PieReserveBilingual",
+    "SaveMeTheBlame", "AILooksBusy", "AIIsClient", "TestedByPrayer",
+    "AITookMeeting", "MoreAgents", "AllISaidWasSure", "AIWroteBug",
+    "RunOrRun", "ContextFull", "CoffeeNoFix", "RequirementsRegrow",
+    "AICantSleep", "AskedAQuestion", "MyOldCode", "DidYouThough",
 )
 
 def main():

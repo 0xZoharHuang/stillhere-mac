@@ -1,4 +1,4 @@
-在场 · StillHere — Mac 快速开始（0.3.0 Beta）
+在场 · StillHere — Mac 快速开始（0.4.0 Beta）
 
 1. 将「在场 · StillHere」应用拖到 Applications（应用程序）文件夹，双击打开。
 2. 在菜单栏点击「在场」，选择「壁纸与设置」，在壁纸库中选择图片。
@@ -11,3 +11,14 @@
 防窥时电脑仍可操作，知道快捷键的人可直接退出；它不等同于系统锁屏。远程与自动化软件使用的采集方式各不相同，请先用自己的工具测试画面和操作。本版本未完成独立 UU 实时远控验收。
 
 项目和更新：https://github.com/0xZoharHuang/stillhere-mac
+
+ENGLISH — QUICK START
+1. Drag StillHere.app to Applications and open it.
+2. Open the menu-bar app, choose 壁纸与设置 (Wallpaper & Settings), then 壁纸库 (Wallpaper Library).
+3. Press Control + Option + Command + P to show the privacy wallpaper; press it again to return to your desktop.
+
+The interface is currently in Chinese. First use runs a capture compatibility check and may request Screen Recording permission. If the check fails, privacy will not turn on. macOS locking, sleep and closing the lid are controlled by macOS.
+
+This Beta is ad-hoc signed and not notarized; macOS may prevent it from opening. Check the download and checksum, and see Apple's guidance: https://support.apple.com/en-us/102445
+
+Anyone who knows the shortcut can exit privacy, and the desktop remains operable. This is not a replacement for the system lock screen. Test your own remote-control and automation tools before relying on it; live UU Remote compatibility has not been independently verified for this build.

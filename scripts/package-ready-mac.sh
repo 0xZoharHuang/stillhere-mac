@@ -3,7 +3,7 @@ set -euo pipefail
 root="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$root"
 app="$root/dist/StillHere.app"
-out="$root/dist/StillHere-0.3.0-mac-ready.dmg"
+out="$root/dist/StillHere-0.4.0-mac-ready.dmg"
 test -d "$app"
 codesign --verify --deep --strict "$app"
 stage="$(mktemp -d "${TMPDIR:-/tmp}/stillhere-ready.XXXXXX")"

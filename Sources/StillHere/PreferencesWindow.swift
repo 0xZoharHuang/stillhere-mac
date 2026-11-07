@@ -14,11 +14,27 @@ struct BuiltInWallpaper {
         .init(id: "capybara", resource: "ExistentialCapybara", title: "我司雇我在", subtitle: "低功耗哲学家"),
         .init(id: "meeting", resource: "MeetingEmail", title: "本来可以是封邮件", subtitle: "会议生存指南"),
         .init(id: "away", resource: "AwayWorking", title: "人在休息，活在运行", subtitle: "赛博同事在线"),
-        .init(id: "elsewhere", resource: "QuietOffice", title: "正在装作不在工位", subtitle: "安静离席中"),
-        .init(id: "inbox", resource: "InboxReply", title: "已读，乱回", subtitle: "收件箱求生指南"),
-        .init(id: "fish", resource: "FishMode", title: "正在认真摸鱼", subtitle: "深度摸鱼模式"),
-        .init(id: "loading", resource: "LoadingDog", title: "精神状态：加载中", subtitle: "请耐心等待 99%"),
-        .init(id: "pie", resource: "PieReserve", title: "老板画的饼，先放冰箱", subtitle: "战略储备，慢慢消化")
+        .init(id: "elsewhere", resource: "QuietOfficeBilingual", title: "正在装作不在工位", subtitle: "Pretending I'm not at my desk"),
+        .init(id: "inbox", resource: "InboxReplyBilingual", title: "已读，乱回", subtitle: "Read it, wing it"),
+        .init(id: "fish", resource: "FishModeBilingual", title: "正在认真摸鱼", subtitle: "Seriously slacking off"),
+        .init(id: "loading", resource: "LoadingDogBilingual", title: "精神状态：加载中", subtitle: "Status: still loading"),
+        .init(id: "pie", resource: "PieReserveBilingual", title: "老板画的饼，先放冰箱", subtitle: "Boss's promises: keep refrigerated"),
+        .init(id: "human-offline", resource: "SaveMeTheBlame", title: "人不在，锅先留着", subtitle: "I'm away. Save me the blame."),
+        .init(id: "agent-work", resource: "AILooksBusy", title: "AI上班，我先装忙", subtitle: "AI works. I look busy."),
+        .init(id: "ai-coworker", resource: "AIIsClient", title: "AI是甲方，我是乙方", subtitle: "My AI is the client."),
+        .init(id: "tested-by-prayer", resource: "TestedByPrayer", title: "代码已通过祈祷", subtitle: "Tested by prayer"),
+        .init(id: "meeting-ai", resource: "AITookMeeting", title: "会让AI开了，锅让我背了", subtitle: "AI took the meeting. I took the blame."),
+        .init(id: "more-agents", resource: "MoreAgents", title: "多智能体，少睡眠", subtitle: "More agents, less sleep"),
+        .init(id: "approved-plan", resource: "AllISaidWasSure", title: "我只说了句可以", subtitle: "All I said was 'sure'."),
+        .init(id: "ai-wrote-bug", resource: "AIWroteBug", title: "不是我的BUG，是AI写的", subtitle: "Not my bug. My AI wrote it."),
+        .init(id: "works-on-machine", resource: "RunOrRun", title: "我和代码，总有一个能跑", subtitle: "Either the code runs, or I do."),
+        .init(id: "context-full", resource: "ContextFull", title: "上下文已耗尽", subtitle: "Context window full"),
+        .init(id: "coffee-first", resource: "CoffeeNoFix", title: "咖啡不解决问题，我也不", subtitle: "Coffee doesn't solve problems. Neither do I."),
+        .init(id: "do-not-feed", resource: "RequirementsRegrow", title: "需求像韭菜，割完又长", subtitle: "Requirements: cut today, back tomorrow."),
+        .init(id: "off-clock", resource: "AICantSleep", title: "AI不下班，我不敢睡", subtitle: "My AI never clocks out. I can't sleep."),
+        .init(id: "generating", resource: "AskedAQuestion", title: "我就问了个问题，它开始重构了", subtitle: "I asked a question. It started refactoring."),
+        .init(id: "restart-world", resource: "MyOldCode", title: "代码是我写的，我也是第一次见", subtitle: "I wrote this. First time I've seen it."),
+        .init(id: "both-guessing", resource: "DidYouThough", title: "AI说改好了，我说你确定", subtitle: "AI: fixed it. Me: did you, though?")
     ]
     static func find(_ id: String?) -> BuiltInWallpaper? { all.first { $0.id == id } }
 }
@@ -164,9 +180,11 @@ final class PreferencesWindow: NSWindowController {
 
     private func makeLibrary() -> NSView {
         let title = label("壁纸库", size: 27, weight: .bold)
-        let description = secondary("选一张陪你离席。你的桌面工作会继续。", size: 13)
+        let description = secondary("\(BuiltInWallpaper.all.count) 张中英双语壁纸，选一张陪你离席。", size: 13)
         var rows: [NSView] = []
         for pair in stride(from: 0, to: BuiltInWallpaper.all.count, by: 2) {
+            if pair == 0 { rows.append(label("打工日常  ·  OFFICE LIFE", size: 14, weight: .semibold)) }
+            if pair == 8 { rows.append(label("人类与 AI  ·  HUMAN + AI", size: 14, weight: .semibold)) }
             let a = wallpaperCard(BuiltInWallpaper.all[pair])
             let b: NSView = pair + 1 < BuiltInWallpaper.all.count
                 ? wallpaperCard(BuiltInWallpaper.all[pair + 1]) : NSView()
