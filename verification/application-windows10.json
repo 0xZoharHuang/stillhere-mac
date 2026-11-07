@@ -1,7 +1,7 @@
 {
   "product": "StillHere",
   "version": "0.1.0",
-  "status": "native-desktop-passed-first-run-setup-pending",
+  "status": "native-desktop-passed-personal-setup-complete",
   "recordedAtUTC": "2026-11-06T06:33:20.4380582Z",
   "host": {
     "os": "Windows 10 22H2",
@@ -104,7 +104,6 @@
   },
   "crossEnvironmentAcceptance": "application-windows-server2022.json",
   "unverified": [
-    "User first-run password setup",
     "Independent UU video and remote input journey under the final protection layer",
     "Human physical-panel observation",
     "Other Windows builds and capture implementations"
@@ -128,5 +127,16 @@
     "authenticationDialogOpen": false,
     "temporaryQAProcesses": 0,
     "userPasswordConfigured": false
+  },
+  "personalSetupReadback": {
+    "observedAtUTC": "2026-11-07T04:28:53.5876908Z",
+    "source": "User saved the password; a read-only local verifier check confirmed the requested value",
+    "userPasswordConfigured": true,
+    "matchesUserRequestedValue": true,
+    "passwordValueIncluded": false,
+    "running": true,
+    "protected": false,
+    "shortcutRegistered": true,
+    "authenticationDialogOpen": false
   }
 }

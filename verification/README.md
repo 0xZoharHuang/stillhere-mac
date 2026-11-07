@@ -38,7 +38,7 @@ The actual `SendInput` journey passed shortcut activation, typing and clicking t
 
 [application-windows10.json](application-windows10.json) records the final published EXE on the authorized Windows 10 / build 19045 host. Both downloaded ZIP and EXE matched the published release hashes. The complete native input and password journey passed with exit code 0, including unchanged foreground during first-enable qualification. The same EXE was installed per user and a desktop shortcut was created; startup left protection off. The user's first-run password setup is tracked separately.
 
-The latest readback in that record verifies that the installed executable still matches the tested release, the normal application process is running with protection off and its shortcut registered, and no temporary QA process remains. The user's personal exit password was not yet configured at the time of that readback.
+The installation readback verifies that the installed executable still matches the tested release, the normal application process is running with protection off and its shortcut registered, and no temporary QA process remains. In a later readback, after the user completed first-run setup, the personal exit password was configured and matched the value requested by the user. The password itself is not included in the record.
 
 Earlier results are preserved separately in that record: managed forms took focus in a previous build, and third-party ScreenSaverPlayer instances interfered with capture in the final build. Those failures were rejected by the qualification gate. After only the observed screen-saver processes were ended, the unchanged published EXE passed the full Windows 10 journey. No system account or lock policy was changed.
 
