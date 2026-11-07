@@ -85,7 +85,6 @@
     "diagnosticUsedExistingAuthorizedCaller": true
   },
   "unverified": [
-    "physical-panel human observation",
     "independent live UU remote session",
     "macOS versions other than 15.5",
     "runtime on Intel hardware"
@@ -93,5 +92,13 @@
   "distribution": {
     "signing": "ad-hoc",
     "appleNotarized": false
+  },
+  "physicalPanelUserAcceptance": {
+    "recordedAtUTC": "2026-11-07T03:45:28.418857+00:00",
+    "source": "User present at the Mac responded in this conversation",
+    "wallpaperVisibleAndNormal": true,
+    "passwordExitWorked": true,
+    "displayCountIndependentlyConfirmed": false,
+    "notes": "User confirmed wallpaper appearance and successful exit; no separate per-display count or exact visual details were asserted."
   }
 }

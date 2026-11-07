@@ -16,9 +16,9 @@ The final runtime record is [application-macos15.5.json](application-macos15.5.j
 
 Native acceptance used the installed application and the CUA native app control path: the tool captured the real fixture under two active privacy windows, clicked the field, entered a new phrase, clicked the record button, and captured the updated text and live clock. The explicit shortcut enabled privacy and then opened the password dialog. A wrong password and cancellation left both windows active; a protected quit request required authentication, and the correct password exited and released power assertions. Normal relaunch kept privacy off. The settings window and default image preview were visually checked at the intended 590-point width.
 
-The final preferences-only layout correction did not alter capture, input, or authentication code. Its UI was inspected separately after installation. The application is left running in the menu bar with privacy off and no authentication dialog open.
+The final preferences-only layout correction did not alter capture, input, or authentication code. Its UI was inspected separately after installation. At that validation point, the application was left running in the menu bar with privacy off and no authentication dialog open.
 
-Physical-panel appearance has not been human-confirmed. The user was not watching during the test. A live UU remote session, other macOS versions, and Intel hardware remain unverified. These are separate from the completed native automation check.
+The user subsequently confirmed in conversation, while in front of the Mac, that the privacy wallpaper appeared normal and the password returned to the desktop. This is a user-reported physical-panel observation, not a separate visual record for each display. A live UU remote session, other macOS versions, and Intel hardware remain unverified. These are separate from the completed native automation check.
 
 Raw per-user profiles, password verifiers, local runtime state, and desktop screenshots are excluded from Git. Unit tests independently check a PBKDF2 reference vector, wrong-password rejection, randomized salts, private file permissions, configuration corruption, and retry delays.
 
