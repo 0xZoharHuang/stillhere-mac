@@ -1,0 +1,86 @@
+{
+  "date": "2026-11-27",
+  "mac_version": "0.4.1 (5)",
+  "windows_version": "0.2.0",
+  "macos_15_5_build_24F74": {
+    "capture_qualification": {
+      "ordinary_cover": "magenta",
+      "protected_target": "green",
+      "target_changed_while_protected": "cyan",
+      "backends": [
+        "Core Graphics",
+        "ScreenCaptureKit with empty exclusion list"
+      ],
+      "foreground_preserved": true,
+      "probe_took_focus": false
+    },
+    "native_input": {
+      "screens_covered": 2,
+      "read_fixture": true,
+      "clicked_field_typed_and_clicked_record": true,
+      "screenshot_showed_new_value_and_updated_clock": true,
+      "scope": "0.4.1 before Finder reopen handler, same privacy and input code"
+    },
+    "cover_drawing": "Rendered production content view with transparent portrait art on two screens. Artwork, transparent source pixels and letterbox corners all had opaque output.",
+    "installed_release": {
+      "bundle_identical_to_verified_package": true,
+      "full_screen_windows": 2,
+      "mouse_transparent_and_non_key": true,
+      "independent_process_capture": "Both Core Graphics and unfiltered ScreenCaptureKit sampled green then cyan underneath the installed full-screen cover.",
+      "shortcut_registered": true
+    },
+    "isolated_release_cleanup": {
+      "windows": 0,
+      "power_assertions": 0
+    }
+  },
+  "macbook_neo_macos_26_7_build_25G229": {
+    "scope": "Mechanism comparison and packaged 0.4.1 candidate probe. The final app includes a color-profile tolerance adjustment and Finder reopen handling.",
+    "ordinary_cover": "magenta",
+    "underlying_target": "green",
+    "old_opaque_cover": "Both paths returned a near-white patch instead of the target.",
+    "nonopaque_window_with_painted_content": "Both paths read the green underlying target. The candidate probe also read its change to cyan.",
+    "legacy_probe_passed": true,
+    "unfiltered_screen_capture_kit_probe_passed": true,
+    "pending": [
+      "Final installation readback",
+      "Full-screen physical observation",
+      "UU live video and input while the full-screen cover is active"
+    ]
+  },
+  "windows_interactive_desktop": {
+    "exe_sha256": "df23b235fbb34824f158fb2f53c94ab13e67521ad0a8b63653d92454c991b190",
+    "normal_cover": "magenta",
+    "excluded_target": "green",
+    "live_target": "cyan",
+    "foreground_preserved": true,
+    "probe_took_focus": false,
+    "shortcut_on_off_on_passed": true,
+    "typed_and_clicked_while_protected": true,
+    "quit_and_resource_release_passed": true,
+    "restored_normal_app": {
+      "privacy_on": false,
+      "shortcut_registered": true
+    },
+    "physical_panel_and_uu_live_input": "not independently observed in this run"
+  },
+  "distribution": {
+    "mac_architectures": [
+      "arm64",
+      "x86_64"
+    ],
+    "mac_code_signature": "ad-hoc verified deep and strict",
+    "mac_zip_and_read_only_ready_dmg_identical_to_built_app": true,
+    "bilingual_images_compared_across_platforms": 24,
+    "swift_tests_passed": 8,
+    "ready_assets_sha256": {
+      "StillHere-0.4.1-mac-ready.dmg": "d5cd9a8ad2a80205c16c21910c18a255a5b4c8fb61fc1a1cc685e2071c6bdbbf",
+      "StillHere-0.4.1-mac.zip": "c9dcad3b538c69dc31f3f83fcb8840e468ba1baf53a57b8ac4f74fd6e96aeb3c",
+      "StillHere-0.2.0-windows-ready.zip": "84b8160b25631eda2d47ecdd8449f3b45b43b120307620d2b9876ea39127ae31"
+    }
+  },
+  "outside_scope": [
+    "Intel hardware runtime",
+    "Other OS builds and remote capture implementations"
+  ]
+}

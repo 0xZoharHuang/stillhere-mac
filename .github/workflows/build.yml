@@ -26,9 +26,9 @@ jobs:
         with:
           name: StillHere-mac
           path: |
-            dist/StillHere-0.4.0-mac.zip
-            dist/StillHere-0.4.0-mac.dmg
-            dist/StillHere-0.4.0-mac-ready.dmg
+            dist/StillHere-0.4.1-mac.zip
+            dist/StillHere-0.4.1-mac.dmg
+            dist/StillHere-0.4.1-mac-ready.dmg
             dist/SHA256SUMS.txt
   windows:
     runs-on: windows-2022

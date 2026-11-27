@@ -3,7 +3,7 @@ import Carbon
 import StillHereCore
 import UniformTypeIdentifiers
 
-let appVersion = "0.4.0"
+let appVersion = "0.4.1"
 let commandNotification = Notification.Name("dev.0xzohar.stillhere.command")
 
 @MainActor
@@ -56,6 +56,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         return .terminateNow
+    }
+
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        if !overlay.isActive { showPreferences() }
+        return false
     }
 
     func applicationWillTerminate(_ notification: Notification) {

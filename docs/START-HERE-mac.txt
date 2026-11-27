@@ -1,4 +1,4 @@
-在场 · StillHere — Mac 快速开始（0.4.0 Beta）
+在场 · StillHere — Mac 快速开始（0.4.1 Beta）
 
 1. 将「在场 · StillHere」应用拖到 Applications（应用程序）文件夹，双击打开。
 2. 在菜单栏点击「在场」，选择「壁纸与设置」，在壁纸库中选择图片。

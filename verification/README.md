@@ -4,13 +4,15 @@ Runtime evidence must come from the packaged application and an independent capt
 
 ## Mechanism probe
 
-`research/capture_probe.m` creates two small, nonactivating, click-through windows: a green target and a magenta cover. It captures a normal cover, captures with explicit ScreenCaptureKit exclusion as a reference, then sets only the cover's sharing type to `none` and captures again with both a legacy capture API and an unfiltered ScreenCaptureKit capture. No keyboard or mouse input is injected. A 24-second watchdog exits on stalls.
+`research/capture_probe.m` creates two small, nonactivating, click-through windows: a green target and a magenta cover. It captures a normal cover, captures with explicit ScreenCaptureKit exclusion as a reference, then recreates the cover with sharing disabled before showing it. Core Graphics and unfiltered ScreenCaptureKit must both see the green target and its subsequent change to cyan. No keyboard or mouse input is injected. A 24-second watchdog exits on stalls.
 
 All saved images are cropped to the test patch. Actual desktop pixels are not intentionally stored. The window focus check compares the frontmost application's process before and after the probe.
 
 The macOS 15.5 / 24F74 results are in [mechanism-macos15.5.json](mechanism-macos15.5.json) and [mechanism-external-display-macos15.5.json](mechanism-external-display-macos15.5.json). The high-density built-in display and the external display were checked separately. Both normal-capture controls show the magenta overlay; both protected captures show the green target. The explicit-exclusion reference also shows the target, and the frontmost application stays unchanged.
 
 ## Application acceptance
+
+[The 0.4.1 acceptance record](acceptance-0.4.1.json) covers the macOS 26.7 probe regression and fix, full-screen capture on 15.5, native input under two privacy windows, and the Windows 0.2.0 shortcut journey. The release includes the same 24 bilingual artworks on both platforms.
 
 The 0.4.0 bilingual collection has a separate [gallery and package record](application-macos15.5-v0.4.0.json). It covers the 24-image catalog, UI scrolling, selection persistence and package readback. The previous direct capture/input and physical-display checks remain attributed to 0.3.0; they were not repeated for 0.4.0.
 

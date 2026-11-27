@@ -6,10 +6,12 @@ public struct CaptureCompatibility: Codable {
     public let normalCaptureControlPassed: Bool
     public let legacyCapturePassed: Bool
     public let screenCaptureKitPassed: Bool
+    public let liveUpdatePassed: Bool?
     public let focusPreserved: Bool
 
     public init(osBuild: String, normalCaptureControlPassed: Bool, legacyCapturePassed: Bool,
-                screenCaptureKitPassed: Bool, focusPreserved: Bool) {
+                screenCaptureKitPassed: Bool, focusPreserved: Bool, liveUpdatePassed: Bool) {
+        self.liveUpdatePassed = liveUpdatePassed
         self.osBuild = osBuild
         validatedAt = Date()
         self.normalCaptureControlPassed = normalCaptureControlPassed
@@ -19,7 +21,7 @@ public struct CaptureCompatibility: Codable {
     }
 
     public func isUsable(on build: String) -> Bool {
-        osBuild == build && normalCaptureControlPassed && legacyCapturePassed && screenCaptureKitPassed && focusPreserved
+        liveUpdatePassed == true && osBuild == build && normalCaptureControlPassed && legacyCapturePassed && screenCaptureKitPassed && focusPreserved
     }
 
     public static func fromProbe(_ json: [String: Any], currentBuild: String) -> CaptureCompatibility? {
@@ -32,6 +34,7 @@ public struct CaptureCompatibility: Codable {
             normalCaptureControlPassed: kind("normal_legacy") == "privacy_overlay_visible" && kind("normal_sck") == "privacy_overlay_visible",
             legacyCapturePassed: kind("protected_legacy") == "underlying_desktop",
             screenCaptureKitPassed: kind("protected_sck") == "underlying_desktop",
-            focusPreserved: json["probeTookKeyboardFocus"] as? Bool == false)
+            focusPreserved: json["probeTookKeyboardFocus"] as? Bool == false && json["frontmostAppUnchanged"] as? Bool == true,
+            liveUpdatePassed: kind("live_legacy") == "updated_desktop" && kind("live_sck") == "updated_desktop")
     }
 }

@@ -87,6 +87,11 @@ final class PasswordTests: XCTestCase {
         XCTAssertFalse(try XCTUnwrap(CaptureCompatibility.fromProbe(probe, currentBuild: "test-build")).isUsable(on: "test-build"))
         probe["normal_legacy"] = sample("privacy_overlay_visible")
         probe["normal_sck"] = sample("privacy_overlay_visible")
+        probe["frontmostAppUnchanged"] = true
+        // A cached record or a frozen green frame cannot qualify the new window configuration.
+        XCTAssertFalse(try XCTUnwrap(CaptureCompatibility.fromProbe(probe, currentBuild: "test-build")).isUsable(on: "test-build"))
+        probe["live_legacy"] = sample("updated_desktop")
+        probe["live_sck"] = sample("updated_desktop")
         XCTAssertTrue(try XCTUnwrap(CaptureCompatibility.fromProbe(probe, currentBuild: "test-build")).isUsable(on: "test-build"))
         XCTAssertNil(CaptureCompatibility.fromProbe(probe, currentBuild: "different-build"))
     }

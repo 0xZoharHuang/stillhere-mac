@@ -2,7 +2,7 @@
 
 **人可以离席，工作继续在场。**
 
-[English](README.md) · [下载 Beta](https://github.com/0xZoharHuang/stillhere-mac/releases/tag/v0.4.0) · [交流与建议](https://github.com/0xZoharHuang/stillhere-mac/discussions)
+[English](README.md) · [下载 Beta](https://github.com/0xZoharHuang/stillhere-mac/releases/tag/v0.4.1) · [交流与建议](https://github.com/0xZoharHuang/stillhere-mac/discussions)
 
 StillHere 是独立运行的隐私壁纸工具，包含 macOS 和 Windows 原生实现。开启后，物理显示器显示自选图片，桌面会话继续运行；保护层不接收鼠标事件，也不取得键盘焦点。再次按快捷键即可退出防窥。
 
@@ -12,11 +12,11 @@ StillHere 是独立运行的隐私壁纸工具，包含 macOS 和 Windows 原生
 
 ## 下载
 
-- [下载 Mac 或 Windows 开箱包](https://github.com/0xZoharHuang/stillhere-mac/releases/tag/v0.4.0)：均附中英文快速开始说明；Windows 压缩包包含全部壁纸，解压后即可在设置中选择。Mac 为 Apple Silicon + Intel 通用构建，实际运行验收为 macOS 15.5 / Apple Silicon。Windows 要求见 [windows/README.md](windows/README.md)。
+- [下载 Mac 或 Windows 开箱包](https://github.com/0xZoharHuang/stillhere-mac/releases/tag/v0.4.1)：均附中英文快速开始说明；Windows 压缩包包含全部壁纸，解压后即可在设置中选择。Mac 为 Apple Silicon + Intel 通用构建，macOS 15.5 已验证双屏防窥和桌面输入，macOS 26.7 的 MacBook Neo 已通过新版采集探针。Windows 要求见 [windows/README.md](windows/README.md)。
 
 ## macOS 使用
 
-1. 打开 `StillHere.app`。应用常驻菜单栏，名称为“在场”。
+1. 在「应用程序」中双击 `StillHere.app`，即可打开「在场」。关闭设置后，应用常驻菜单栏。防窥关闭时，再次双击应用即可找回设置。
 2. 从菜单选择“开启隐私壁纸”，或按 **Control + Option + Command + P**。
 3. 首次开启会先显示几秒钟的角落测试色块，验证普通截图和 ScreenCaptureKit 都能排除保护层。诊断可能需要你授权录屏；也可以在已有录屏权限的终端运行 `/Applications/StillHere.app/Contents/MacOS/StillHere --diagnose`，应用本身就无需新增录屏权限。检查不通过时不会开启全屏壁纸。
 4. 回来后再按一次相同快捷键，立即返回桌面。壁纸上不显示快捷键提示。
@@ -31,7 +31,7 @@ StillHere 是独立运行的隐私壁纸工具，包含 macOS 和 Windows 原生
 
 本工具使用 `NSWindow.sharingType = .none`，并把壁纸窗口设为鼠标穿透、不能成为键盘焦点的窗口。采集排除是一项**必须按系统版本和采集方式验证的行为**。Apple 的最新文档已将旧式窗口共享标记列为 legacy；因此本工具不会把该属性当成跨版本保证。
 
-首次开启与系统 build 变化后，都需要重新通过采集检查。检查同时包含普通遮挡窗口的阳性对照，避免把“测试窗口没显示出来”误判成排除成功。
+首次开启与系统 build 变化后，都需要重新通过采集检查。探针先显示普通色块，再启用采集排除，并在保护层下将绿色改为青色。两种采集都要读到这次变化，测试期间前台和键盘焦点也要保持稳定。旧版自检记录在升级后会重新验证。
 
 已在 macOS 15.5 / build 24F74 上确认：
 
@@ -46,13 +46,13 @@ StillHere 是独立运行的隐私壁纸工具，包含 macOS 和 Windows 原生
 
 完整应用的界面、输入和多显示器验收记录见 [verification/README.md](verification/README.md)。上面的结果不代表已经逐一验证每一种自动化、远程软件、显卡和未来系统版本。请在你实际使用的工具中确认截图、点击、输入和再次截图都正常后，再长期离席使用。
 
-用户已在 Mac 显示器前确认当前版壁纸显示正常、不带快捷键提示且可直接返回桌面；尚未逐块屏幕单独记录观察结果，也没有进行独立的 UU 实时远控会话验收。远程采集会排除壁纸，因此远程桌面截图本身不能代替实体屏幕观察。
+0.4.1 在 macOS 15.5 上通过双屏防窥、原生输入及全屏壁纸下的独立实时采集测试。macOS 26.7 的 MacBook Neo 已通过新版小窗口探针，两种采集均读到了底层变化。Neo 实体屏幕和 UU 实时输入仍待现场验收。早期版本的实体壁纸和直接退出由用户在 Mac 前确认。[本次验收记录](verification/acceptance-0.4.1.json)
 
 防窥不再使用密码；壁纸本身不会显示快捷键提示。
 
 ## 安装与构建
 
-构建要求：macOS、Xcode Command Line Tools、Swift 5.9 或更新版本。部署目标为 macOS 14.0；当前实际运行验证环境为 macOS 15.5。
+构建要求：macOS、Xcode Command Line Tools、Swift 5.9 或更新版本。部署目标为 macOS 14.0；各系统版本的验证范围见上文。
 
 ```bash
 swift test
@@ -66,8 +66,8 @@ python scripts/package-windows.py dist/windows/StillHere.exe dist/StillHere-0.2.
 产物：
 
 - `dist/StillHere.app`：Apple Silicon + Intel 通用应用。
-- `dist/StillHere-0.4.0-mac.zip`：应用压缩包。
-- `dist/StillHere-0.4.0-mac.dmg`：拖入 Applications 的安装映像。
+- `dist/StillHere-0.4.1-mac.zip`：应用压缩包。
+- `dist/StillHere-0.4.1-mac.dmg`：拖入 Applications 的安装映像。
 - `dist/SHA256SUMS.txt`：安装包校验值。
 
 当前构建使用本地 ad-hoc 签名，尚未经过 Apple 公证。源代码构建不需要 Apple 开发者账号。

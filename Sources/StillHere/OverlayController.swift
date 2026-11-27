@@ -6,6 +6,15 @@ final class PrivacyWindow: NSWindow {
     override var canBecomeMain: Bool { false }
 }
 
+private final class WallpaperView: NSImageView {
+    override func draw(_ dirtyRect: NSRect) {
+        // Cover letterboxing and transparent image pixels on the physical screen.
+        NSColor(calibratedRed: 0.98, green: 0.94, blue: 0.86, alpha: 1).setFill()
+        dirtyRect.fill()
+        super.draw(dirtyRect)
+    }
+}
+
 final class OverlayController {
     private(set) var windows: [PrivacyWindow] = []
     private var powerAssertions: [IOPMAssertionID] = []
@@ -22,8 +31,9 @@ final class OverlayController {
                                        backing: .buffered, defer: false, screen: screen)
             window.title = "StillHere Privacy Wallpaper"
             window.level = .screenSaver
-            window.backgroundColor = NSColor(calibratedRed: 0.98, green: 0.94, blue: 0.86, alpha: 1)
-            window.isOpaque = true
+            // Keep the desktop composited underneath the excluded window on macOS 26.
+            window.isOpaque = false
+            window.backgroundColor = .clear
             window.hasShadow = false
             window.ignoresMouseEvents = true
             window.canHide = false
@@ -32,7 +42,7 @@ final class OverlayController {
             // Set BEFORE showing: no normal-capture frame of the wallpaper is emitted.
             // This behavior is tested per macOS/capture backend; see verification evidence.
             window.sharingType = .none
-            let view = NSImageView(frame: NSRect(origin: .zero, size: screen.frame.size))
+            let view = WallpaperView(frame: NSRect(origin: .zero, size: screen.frame.size))
             view.image = image
             view.imageScaling = .scaleProportionallyUpOrDown
             view.imageAlignment = .alignCenter

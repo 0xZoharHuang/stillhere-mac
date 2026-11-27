@@ -20,19 +20,20 @@ static NSDictionary *saveImage(CGImageRef image, NSString *path) {
     if (!image) return @{@"status": @"no_image"};
     NSBitmapImageRep *rep = [[NSBitmapImageRep alloc] initWithCGImage:image];
     [[rep representationUsingType:NSBitmapImageFileTypePNG properties:@{}] writeToFile:path atomically:YES];
-    NSInteger green = 0, magenta = 0, black = 0, total = 0;
+    NSInteger cyan = 0, green = 0, magenta = 0, black = 0, total = 0;
     for (NSInteger y = 5; y < rep.pixelsHigh - 5; y += 4) {
         for (NSInteger x = 5; x < rep.pixelsWide - 5; x += 4) {
             NSColor *c = [[rep colorAtX:x y:y] colorUsingColorSpace:NSColorSpace.sRGBColorSpace];
             if (!c) continue;
             CGFloat r = c.redComponent, g = c.greenComponent, b = c.blueComponent;
             total++;
+            if (g > .65 && b > .65 && MIN(g, b) > r + .35) cyan++;
             if (g > .65 && g > r + .35 && g > b + .35) green++;
             if (r > .65 && b > .65 && g < .35) magenta++;
             if (r < .15 && g < .15 && b < .15) black++;
         }
     }
-    NSString *kind = green > total * .7 ? @"underlying_desktop" :
+    NSString *kind = total == 0 ? @"no_samples" : cyan > total * .7 ? @"updated_desktop" : green > total * .7 ? @"underlying_desktop" :
         magenta > total * .7 ? @"privacy_overlay_visible" :
         black > total * .7 ? @"black_rectangle" : @"unexpected_pixels";
     return @{@"status": @"captured", @"classification": kind,
@@ -99,21 +100,29 @@ int main(int argc, const char *argv[]) {
         CGRect displayBounds = CGDisplayBounds(displayID);
         CGRect sourceRect = CGRectOffset(globalRect, -displayBounds.origin.x, -displayBounds.origin.y);
         pid_t frontBefore = NSWorkspace.sharedWorkspace.frontmostApplication.processIdentifier;
-        ProbePanel *(^panel)(NSColor *, NSInteger) = ^ProbePanel *(NSColor *color, NSInteger level) {
+        ProbePanel *(^panel)(NSColor *, NSInteger, BOOL, NSWindowSharingType) = ^ProbePanel *(NSColor *color, NSInteger level, BOOL cover, NSWindowSharingType sharing) {
             ProbePanel *p = [[ProbePanel alloc] initWithContentRect:frame styleMask:NSWindowStyleMaskBorderless | NSWindowStyleMaskNonactivatingPanel backing:NSBackingStoreBuffered defer:NO];
-            p.backgroundColor = color;
-            p.opaque = YES;
+            p.opaque = !cover;
+            p.backgroundColor = cover ? NSColor.clearColor : color;
+            if (cover) {
+                NSImage *image = [NSImage imageWithSize:frame.size flipped:NO drawingHandler:^BOOL(NSRect bounds) {
+                    [color setFill];
+                    NSRectFill(bounds);
+                    return YES;
+                }];
+                p.contentView = [NSImageView imageViewWithImage:image];
+            }
             p.hasShadow = NO;
             p.ignoresMouseEvents = YES;
             p.hidesOnDeactivate = NO;
             p.level = level;
-            p.sharingType = NSWindowSharingReadOnly;
+            p.sharingType = sharing;
             p.collectionBehavior = NSWindowCollectionBehaviorCanJoinAllSpaces | NSWindowCollectionBehaviorFullScreenAuxiliary;
             [p orderFrontRegardless];
             return p;
         };
-        ProbePanel *target = panel([NSColor colorWithDeviceRed:0 green:1 blue:0 alpha:1], NSScreenSaverWindowLevel);
-        ProbePanel *mask = panel([NSColor colorWithDeviceRed:1 green:0 blue:1 alpha:1], NSScreenSaverWindowLevel + 1);
+        ProbePanel *target = panel([NSColor colorWithDeviceRed:0 green:1 blue:0 alpha:1], NSScreenSaverWindowLevel, NO, NSWindowSharingReadOnly);
+        __block ProbePanel *mask = panel([NSColor colorWithDeviceRed:1 green:0 blue:1 alpha:1], NSScreenSaverWindowLevel + 1, YES, NSWindowSharingReadOnly);
         target.title = @"StillHere probe: real desktop";
         mask.title = @"StillHere probe: privacy image";
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 24 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
@@ -139,10 +148,20 @@ int main(int argc, const char *argv[]) {
                 results[@"normal_sck"] = sckCapture(content, display, sourceRect, 0, [out stringByAppendingPathComponent:@"normal-sck.png"]);
                 results[@"explicit_exclusion_sck"] = sckCapture(content, display, sourceRect, (CGWindowID)mask.windowNumber, [out stringByAppendingPathComponent:@"explicit-exclusion-sck.png"]);
             }
-            dispatch_sync(dispatch_get_main_queue(), ^{ mask.sharingType = NSWindowSharingNone; [mask displayIfNeeded]; });
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                [mask orderOut:nil];
+                mask = panel(NSColor.magentaColor, NSScreenSaverWindowLevel + 1, YES, NSWindowSharingNone);
+            });
             [NSThread sleepForTimeInterval:.3];
             results[@"protected_legacy"] = legacyCapture(globalRect, [out stringByAppendingPathComponent:@"protected-legacy.png"]);
             if (display) results[@"protected_sck"] = sckCapture(content, display, sourceRect, 0, [out stringByAppendingPathComponent:@"protected-sck.png"]);
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                target.backgroundColor = NSColor.cyanColor;
+                [target displayIfNeeded];
+            });
+            [NSThread sleepForTimeInterval:.3];
+            results[@"live_legacy"] = legacyCapture(globalRect, [out stringByAppendingPathComponent:@"live-legacy.png"]);
+            if (display) results[@"live_sck"] = sckCapture(content, display, sourceRect, 0, [out stringByAppendingPathComponent:@"live-sck.png"]);
             dispatch_sync(dispatch_get_main_queue(), ^{
                 results[@"frontmostAppUnchanged"] = @(frontBefore == NSWorkspace.sharedWorkspace.frontmostApplication.processIdentifier);
                 results[@"probeTookKeyboardFocus"] = @(probeActivated || mask.isKeyWindow || target.isKeyWindow);
